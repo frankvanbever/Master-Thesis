@@ -1,4 +1,7 @@
+% !TEX root = /home/frank/School/thesis_text/thesis.tex
 % $Id: $
+
+
 \documentclass[a4paper,12pt]{report}
 
 % The following makes latex use nicer postscript fonts.
@@ -43,8 +46,6 @@
 
 
 % subfiles allows the independent compilation of the different subdocuments (http://www.ctan.org/tex-archive/macros/latex2e/contrib/subfiles)
-\usepackage{subfiles}
-
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{xcolor}
@@ -52,6 +53,7 @@
 \usepackage{amsmath}
 \usepackage{tabularx}
 \usepackage{multicol}
+\usepackage{float}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %						%
@@ -87,18 +89,18 @@
 
 
 
-\subfile{tex/abstract}
-\subfile{tex/acknowledgements}
+\include{tex/abstract}
+\include{tex/acknowledgements}
 
 % Obligatory lists
 \tableofcontents
 \listoffigures
 \listoftables
 
-\subfile{tex/introduction}
-\subfile{tex/high_level_synthesis}
-\subfile{tex/platform_overview}
-\subfile{tex/performance_analysis}
+\include{tex/introduction}
+\include{tex/high_level_synthesis}
+\include{tex/platform_overview}
+\include{tex/performance_analysis}
 
 
 \end{document}

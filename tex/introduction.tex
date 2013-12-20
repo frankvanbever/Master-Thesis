@@ -1,5 +1,6 @@
-\documentclass[../thesis.tex]{subfiles} 
-\begin{document}
+% !TEX root = /home/frank/School/thesis_text/thesis.tex
+
+
 
 
 \chapter{Introduction} 
@@ -22,6 +23,7 @@ FPGAs are devices containing a vast amount of configurable logic linked by progr
 
 Image processing algorithms are very compute intensive. These makes them prime targets for exploiting parallelism and implementing them on parallel architectures. Which platform is the best fit however is dependent on both the algorithm and the data. A common method to subdivide parallel algorithms is presented in [3], the so called ''dwarfs''. These 13 dwarves are classes of algorithms in which the membership is defined by a similarity in computation and data movement.These 13 dwarfs are classes of algorithms in which the membership is defined by a similarity in computation and data movement.
 The dwarfs are:
+
 \begin{multicols}{2}
 \begin{enumerate}
 \item Dense Linear Algebra
@@ -39,14 +41,16 @@ The dwarfs are:
 \item Finite State Machines
 \end{enumerate}
 \end{multicols}
-A thorough review of these dwarfs and what kind of computation and communication they entail goes beyond the scope of this document. More information can be found on the Berkeley View Wiki [5] and an updated view can be found in [2].\\
-Finding out which dwarf is most suited for which platform is a very labour-intensive task. In [5] a theoretical analysis of dwarf performance on different accelerators in heterogeneous systems is given. A first point to note is that for floating point operations GPU's are hard to beat. Fixed point numbers are a way to overcome this problem. Another point to note is that conditional elements and  costly communication can wreak havoc on the accelerator's performance.
 
+A thorough review of these dwarfs and what kind of computation and communication they entail goes beyond the scope of this document. More information can be found on the Berkeley View Wiki [5] and an updated view can be found in [2].\\
+Finding out which dwarf is most suited for which platform is a very labour-intensive task. In [5] a theoretical analysis of dwarf performance on different accelerators in heterogeneous systems is given. A first point to note is that for floating point operations GPU's are hard to beat. Fixed point numbers are a way to overcome this problem. Another point to note is that conditional elements and  costly communication can wreak havoc on the accelerator's performance. In Figure \ref{img:venndiagram_chimera} the analysis is represented by a Venn diagram. In this diagram * denotes fixed point operations whilst \^{} denotes floating point operations.[5]
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.35]{/home/frank/School/thesis_text/images/venndiagram_chimera.png}
-\caption{Venn diagram showing an analysis of different hardware accelerators in regards to performance on a certain dwarf. * denotes fixed point whilst \^{} denotes floating point.[5]}
+\caption{Analysis of different hardware accelerators in regards to performance on a certain dwarf}
+\label{img:venndiagram_chimera}
 \end{figure}
 
-\end{document}
+
+

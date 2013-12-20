@@ -1,0 +1,26 @@
+
+
+% Table specifying the resource consumption of the different solutions
+
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+ & \multicolumn{1}{l|}{\textbf{BRAM\_18K}} & \multicolumn{1}{l|}{\textbf{DSP48E}} & \multicolumn{1}{l|}{\textbf{FF}} & \multicolumn{1}{l|}{\textbf{LUT}} \\ \hline
+\textbf{Original directives} & 3 & 19 & 1487 & 1412 \\ \hline
+\textbf{No pragma} & 5 & 4 & 802 & 1475 \\ \hline
+\textbf{loop\_flatten\_on} & 3 & 23 & 1764 & 1668 \\ \hline
+\textbf{loop\_flatten\_II\_2} & 3 & 23 & 1777 & 1875 \\ \hline
+\textbf{no\_dependence} & 3 & 19 & 1487 & 1412 \\ \hline
+\textbf{no\_pipeline} & 5 & 4 & 802 & 1475 \\ \hline
+\textbf{only dependence} & 5 & 4 & 786 & 1534 \\ \hline
+\textbf{only loop flattening} & 5 & 8 & 1050 & 1783 \\ \hline
+\textbf{only pipelining} & 3 & 23 & 1851 & 1849 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Utilization Estimates}
+\label{tab:utilization_estimates}
+\end{table}
+
+

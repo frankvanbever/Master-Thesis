@@ -1,0 +1,48 @@
+\begin{landscape}
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|r|r|r|r|r|r|}
+\hline
+ & \textbf{Original directives} & \textbf{No pragma} & \textbf{loop\_flatten\_on} & \textbf{loop\_flatten\_II\_2} & \textbf{no\_dependence} \\ \hline
+ &  &  &  &  &  \\ \hline
+\textbf{Estimated Clock (ns)} & 4,2 & 4,35 & 5,25 & 4,2 & 4,2 \\ \hline
+\textbf{Uncertainty (ns)} & 0,62 & 0,62 & 0,62 & 0,62 & 0,62 \\ \hline
+\textbf{cycle time (ns)} & 5 & 5 & 5,25 & 5 & 5 \\ \hline
+\textbf{total cycles} & 22 & 16 & 28 & 29 & 23 \\ \hline
+\textbf{init} & 2 & 2 & 8 & 8 & 2 \\ \hline
+\textbf{outer loop} & 20 & 14 & 20 & 21 & 21 \\ \hline
+\textbf{inner loop} & 19 & 13 & N/A & N/A & 20 \\ \hline
+\textbf{pipelining outer} & no & no & yes & yes & no \\ \hline
+\textbf{pipelining inner} & yes & no & N/A & N/A & yes \\ \hline
+\textbf{Initiation Interval} & 1 & 14 & 1 & 2 & 1 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Analysis Data}
+\label{tab:analysis_data}
+\end{table}
+\end{landscape}
+
+\begin{landscape}
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|r|r|r|r|r|r|}
+\hline
+ & \textbf{no\_pipeline} & \textbf{only dependence} & \textbf{only loop flattening} & \textbf{only pipelining} & \textbf{only pipelining II 2} \\ \hline
+ &  &  &  &  &  \\ \hline
+\textbf{Estimated Clock (ns)} & 4,35 & 4,35 & 4,35 & 4,2 & 4,2 \\ \hline
+\textbf{Uncertainty (ns)} & 0,62 & 0,62 & 0,62 & 0,62 & 0,62 \\ \hline
+\textbf{cycle time (ns)} & 5 & 5 & 5 & 5 & 5 \\ \hline
+\textbf{total cycles} & 17 & 16 & 22 & 31 & 31 \\ \hline
+\textbf{init} & 2 & 2 & 8 & 8 & 8 \\ \hline
+\textbf{outer loop} & 15 & 14 & 14 & 23 & 23 \\ \hline
+\textbf{inner loop} & 14 & 13 & N/A & N/A & N/A \\ \hline
+\textbf{pipelining outer} & no & no & no & yes & yes \\ \hline
+\textbf{pipelining inner} & no & no & no & no & no \\ \hline
+\textbf{Initiation Interval} & 15 & 14 & 14 & 2 & 2 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Analysis Data Continued}
+\label{tab:analysis_data_cont}
+\end{table}
+\end{landscape}

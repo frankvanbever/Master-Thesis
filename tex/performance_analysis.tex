@@ -26,16 +26,15 @@ In systems doing video processing buffers are usually employed to exploit the sp
 The class \texttt{ap\_linebuffer} is a generic C++ implementation of the linebuffer described in XAPP793. A linebuffer is described as a multi-dimensional shift-register. A linebuffer needs to be able to be read and written to in the same cycle to maximize performance. The dual port nature of block RAM makes it the ideal component for this abstraction.
 Because the \texttt{ap\_linebuffer} class is generic its behavior needs to be defined in the application. The template for the \texttt{ap\_linebuffer} class is \texttt{<typename T, int LROW, int LCOL>}. A type, the number of rows and the number of columns need to be specified. This is done in the \texttt{sobel.h} file by the following line:
 
-\begin{verbatim}
-typedef ap_linebuffer<unsigned char, 3, MAX_WIDTH> Y_BUFFER;
-\end{verbatim}
+
+\skipbig{\hlsdirective{typedef ap\_linebuffer<unsigned char, 3, MAX\_WIDTH> Y\_BUFFER;}}
+
 
 The parameters of the template are used to determine the size of the only variable of the class, -the array M of type T with LROW rows and LCOL columns.\\
 This array get partitioned by the following directive:
 
-\begin{verbatim}
-#pragma AP ARRAY_PARTITION variable=M dim=1 complete
-\end{verbatim}
+\skipbig{\hlsdirective{\#pragma AP ARRAY\_PARTITION variable=M dim=1 complete}}
+
 
 This means that the first dimension, the number of rows, get partitioned into different block RAMs. This is also reported by the vivado HLS tool. buff\_A is the line buffer used throughout the implementation.\\
 
@@ -53,9 +52,9 @@ This means that the first dimension, the number of rows, get partitioned into di
 The second class used in the application is a generic implementation of the memory window described in XAPP793. It is a combination of shift-registers forming a 2-dimensional data storage element of N pixels centered on a pixel P. Usually these are implemented as flip-flops because they contain relatively few elements who need to be simultaneously available for a calculation. This is achieved through completely partitioning the memory into registers, preventing it from being implemented by a block RAM.
 The template of \texttt{ap\_window} is \texttt{<typename T, int LROW, int LCOL>}. These parameters are used for the only variable in the class, an array M of type T with LROW rows and LCOL cols. Analog to the linebuffer class the programmer here also needs to define the type, number of rows and number of columns of array M. The array gets paritioned into registers by the following directive:
 
-\begin{verbatim}
-#pragma AP ARRAY_PARTITION variable=M dim=0 complete
-\end{verbatim}
+
+\skipbig{\hlsdirective{\#pragma AP ARRAY\_PARTITION variable=M dim=0 complete}}
+
 
 The \texttt{dim=0} means that all dimensions should be partitioned. The \texttt{complete} keyword signifies that this partitioning should be done for the whole array.
 
@@ -112,13 +111,13 @@ the complete expression is then given by:
 
 The original TRD has 3 pragma's applied to it:
 
-\begin{scriptsize}
-\begin{verbatim}
-set_directive_loop_flatten -off "sobel_filter/sobel_filter_label0"
-set_directive_dependence -variable &buff_A -type inter -dependent false "sobel_filter/sobel_filter_label0"
-set_directive_pipeline -II 1 "sobel_filter/sobel_filter_label0"
-\end{verbatim}
-\end{scriptsize}
+\begin{itemize}
+\item \hlsdirective{set\_directive\_loop\_flatten -off \\ "sobel\_filter/sobel\_filter\_label0"}
+\item \hlsdirective{set\_directive\_dependence -variable \&buff\_A -type inter \\ -dependent false "sobel\_filter/sobel\_filter\_label0"}
+\item \hlsdirective{set\_directive\_pipeline -II 1 \\ "sobel\_filter/sobel\_filter\_label0"}
+\end{itemize}
+
+
 
 These all influence the system in a distinct way.
 
@@ -182,13 +181,12 @@ Knowing the number of cycles the throughput can be calculated the same way it is
 
 The next effect that can be studies is the effect of turning loop flattening on. This is done with the following directives:
 
-\begin{scriptsize}
-\begin{verbatim}
-set_directive_dependence -variable &buff_A -type inter -dependent false "sobel_filter/sobel_filter_label0"
-set_directive_pipeline -II 1 "sobel_filter/sobel_filter_label0"
-set_directive_loop_flatten "sobel_filter/sobel_filter_label0"
-\end{verbatim}
-\end{scriptsize}
+\begin{itemize}
+\item \hlsdirective{set\_directive\_dependence -variable \&buff\_A -type inter \\ -dependent false "sobel\_filter/sobel\_filter\_label0"}
+\item \hlsdirective{set\_directive\_pipeline -II 1  \\ "sobel\_filter/sobel\_filter\_label0"}
+\item \hlsdirective{set\_directive\_loop\_flatten  \\ "sobel\_filter/sobel\_filter\_label0"}
+\end{itemize}
+
 
 \subsection{Loop flattening with Initiation Interval 2}
 

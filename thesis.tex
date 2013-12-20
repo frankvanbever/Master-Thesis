@@ -45,7 +45,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% subfiles allows the independent compilation of the different subdocuments (http://www.ctan.org/tex-archive/macros/latex2e/contrib/subfiles)
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{xcolor}
@@ -75,6 +74,17 @@
         morecomment=[l][\color{magenta}]{\#}
         }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%						%
+%	Personal Commands	%
+%						%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\skipbig}[1]{\bigskip #1 \bigskip}
+\newcommand{\hlsdirective}[1]{\begin{small} \texttt{#1} \end{small}}
+
+\newcommand{\quotationmarks}[1]{ ``#1''}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%

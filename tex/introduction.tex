@@ -10,10 +10,10 @@ The solution to this problem was to go over to parallel processors, meaning that
 \section{Computing Components}
 
 \subsection{Multicore Processor}
-The multicore processor is the solution presented for the aforementioned problems by the traditional CPU manufacturers such as Intel and AMD. The idea behind this type of processor is to place a number of cores (currently up to eight) on the same die. This presents a compromise between maintaining sequential performance whilst also providing a certain advantage of parallel processing. Parallel programming for these processors presents certain challenges whilst their modest parallelism cannot provide a dramatic improvement in power performance. Multicore processors are unlikely to be a one-size-fits-all solution to the parallel problem.[3]
+The multicore processor is the solution presented for the aforementioned problems by the traditional CPU manufacturers such as Intel and AMD. The idea behind this type of processor is to place a number of cores (currently up to eight) on the same die. This presents a compromise between maintaining sequential performance whilst also providing a certain advantage of parallel processing. Parallel programming for these processors presents certain challenges whilst their modest parallelism cannot provide a dramatic improvement in power performance. Multicore processors are unlikely to be a one-size-fits-all solution to the parallel problem.\cite{asanovic_landscape_????}
 
 \subsection{Graphics Processing Units} Graphics Processing Units
-Graphics processing units are a type of coprocessor in in traditional computers meant to process images for output to the display. Recently however there has been increased interest in the GPGPU, the general purpose graphics processing unit. These processors implement a different paradigm, namely the manycore paradigm. A  GPU is a processor with hundreds single instruction multiple data cores, each of which is heavily multi-threaded. Because of this large amount of cores the FLOPS (floating point operations per second) is unrivalled. [4]GPU's, due to their SIMD nature present some problems, conditional execution paths for example, present a serious overhead on the GPU. GPU's are programmed with either OpenCL (open standard) or CUDA (proprietary to Nvidia)
+Graphics processing units are a type of coprocessor in in traditional computers meant to process images for output to the display. Recently however there has been increased interest in the GPGPU, the general purpose graphics processing unit. These processors implement a different paradigm, namely the manycore paradigm. A  GPU is a processor with hundreds single instruction multiple data cores, each of which is heavily multi-threaded. Because of this large amount of cores the FLOPS (floating point operations per second) is unrivaled\cite{kirk_programming_2010}. GPU's, due to their SIMD nature present some problems, conditional execution paths for example, present a serious overhead on the GPU. GPU's are programmed with either OpenCL (open standard) or CUDA (proprietary to Nvidia)
 
 \subsection{Field Programmable Gate Array} 
 FPGAs are devices containing a vast amount of configurable logic linked by programmable connections. This logic is comprised of lookup tables grouped together into configurable logic blocks. Any combinatorial function can be programmed into these LUT's. Next to these uncommitted logic blocks a typical FPGA also contains several blocks with a specific function such as block ram and DSP multipliers. FPGAs are an interesting competitor in the parallel processing field because they aren't constrained by the Von Neuman architecture. FPGAs follow the dataflow paradigm in which the data “flows through the logic. Implementing a data-flow is inherently parallel. The different stages in the datapath can also be made sequential effectively making the datapath a pipeline. The fine grained nature of FPGAs also means that the bitwidth can be adapted to the application.
@@ -21,7 +21,7 @@ FPGAs are devices containing a vast amount of configurable logic linked by progr
 
 \section{Berkeley Dwarves}
 
-Image processing algorithms are very compute intensive. These makes them prime targets for exploiting parallelism and implementing them on parallel architectures. Which platform is the best fit however is dependent on both the algorithm and the data. A common method to subdivide parallel algorithms is presented in [3], the so called ''dwarfs''. These 13 dwarves are classes of algorithms in which the membership is defined by a similarity in computation and data movement.These 13 dwarfs are classes of algorithms in which the membership is defined by a similarity in computation and data movement.
+Image processing algorithms are very compute intensive. These makes them prime targets for exploiting parallelism and implementing them on parallel architectures. Which platform is the best fit however is dependent on both the algorithm and the data. A common method to subdivide parallel algorithms is presented in , the so called \emph{dwarfs}. These 13 dwarves are classes of algorithms in which the membership is defined by a similarity in computation and data movement.These 13 dwarfs are classes of algorithms in which the membership is defined by a similarity in computation and data movement.
 The dwarfs are:
 
 \begin{multicols}{2}
@@ -42,13 +42,13 @@ The dwarfs are:
 \end{enumerate}
 \end{multicols}
 
-A thorough review of these dwarfs and what kind of computation and communication they entail goes beyond the scope of this document. More information can be found on the Berkeley View Wiki [5] and an updated view can be found in [2].\\
-Finding out which dwarf is most suited for which platform is a very labour-intensive task. In [5] a theoretical analysis of dwarf performance on different accelerators in heterogeneous systems is given. A first point to note is that for floating point operations GPU's are hard to beat. Fixed point numbers are a way to overcome this problem. Another point to note is that conditional elements and  costly communication can wreak havoc on the accelerator's performance. In Figure \ref{img:venndiagram_chimera} the analysis is represented by a Venn diagram. In this diagram * denotes fixed point operations whilst \^{} denotes floating point operations.[5]
+A thorough review of these dwarfs and what kind of computation and communication they entail goes beyond the scope of this document. More information can be found on the Berkeley View Wiki \cite{anon._dwarf_????} and an updated view can be found in \cite{asanovic_view_2009}.\\
+Finding out which dwarf is most suited for which platform is a very labour-intensive task. In \cite{inta_chimera:_2012} a theoretical analysis of dwarf performance on different accelerators in heterogeneous systems is given. A first point to note is that for floating point operations GPU's are hard to beat. Fixed point numbers are a way to overcome this problem. Another point to note is that conditional elements and  costly communication can wreak havoc on the accelerator's performance. In Figure \ref{img:venndiagram_chimera} the analysis is represented by a Venn diagram. In this diagram * denotes fixed point operations whilst \^{} denotes floating point operations.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.35]{/home/frank/School/thesis_text/images/venndiagram_chimera.png}
-\caption{Analysis of different hardware accelerators in regards to performance on a certain dwarf}
+\includegraphics[scale=0.34]{/home/frank/School/thesis_text/images/venndiagram_chimera.png}
+\caption{Analysis of different hardware accelerators in regards to performance on a certain dwarf \cite{inta_chimera:_2012} }
 \label{img:venndiagram_chimera}
 \end{figure}
 

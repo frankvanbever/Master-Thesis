@@ -2,9 +2,56 @@
 
 \chapter{Performance Analysis}
 
+\section{Roofline Model}
+
+The roofline model as proposed in \cite{Williams:2009:RIV:1498765.1498785} provides a visual model to gain insight into the factors influencing the performance of multicore CPU's.
+It is based on the observation that the off-chip memory bandwidth is the constraining resource on the performance of a system.\cite{patterson2004latency}  The roofline model is a plot of the attainable floating point operations per second in function of the computational intensity. The computational intensity (CI) is the number of floating-point operations per byte fetched from the off-chip RAM memory. The roofline model thus relates the demands of an application on the memory system to the maximum attainable performance.
+An example plot of the roofline model is given in figure \ref{img:roofline_example}.\\
+
+There are two main factors influencing the upper bound on the performance. The first one is the peak memory bandwidth (BW). The peak memory bandwidth is represented by the sloped  black line on the left side of the graph. An application that hits the roof in this area is called memory bound. An example of an computational intensity resulting in memory-bound operation is given by the red line in \ref{img:roofline_example} With increasing computational intensity the performance increases up to the ridge point. The x-coordinate of the ridge point represents the minimal computational intensity an application needs to reach to get maximum performance from the architecture. This maximum performance is the maximum computational performance (CP) and is represented by the flat line on the right side of figure \ref{img:roofline_example}. The dashed blue line shows an application of which the performance hits the roof in the computational performance area. 
+
+The roofline model provides an upper bound to the performance of a certain architecture, but an application is not guaranteed to perform at this upper bound. Only if sufficient use is made of the available resources and optimizations the performance can reach the roof. The effect on the maximum attainable performance on the performance of an architecture can be represented by what is called a \emph{ceiling}. In figure \ref{img:roofline_example} there are 2 examples of a ceiling: an I/O bandwidth ceiling represented by the dashed cyan line and a computational ceiling represented by the dashed green line. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{./images/matlab_plots/roofline_example.png}
+\caption{Example of a roofline model}
+\label{img:roofline_example}
+\end{figure}
+
+Though the roofline model has been conceived as a tool for the estimation of performance of multicore CPU architectures, it has been adapted for use with other architectures such as GPU's\cite{spieringsembedded} and FPGA's\cite{spieringsembedded,daperformance}.
+The roofline model in it's default form is inadequate to describe the maximum attainable performance of an FPGA based system because of the flexibility of FPGA's. In \cite{daperformance} a number of extensions are proposed to make the roofline model more suitable for FPGA's:
+\begin{description}
+	
+	\item[Operations] Because floating-point operations are prohobitively expensive area-wise they are often replaced by alternatives such as fixed-point operations. For this reason byte-operations [Bops] are proposed as a more general alternative to the more CPU/GPU specific floating-point operations.
+
+	\item[Scalability] Consider a processing element (PE) that contains all the necessary resources to perform the functionality of the algorithm. If the FPGA has enough resources this allows for multiple instantiations of the PE. The scalability factor is given by following formula:
+
+	\begin{equation}
+		SC = \left[\frac{Available\;Resources}{Resource\;consumption \; per \; PE}\right]
+	\end{equation}
+
+	The attainable performance of one PE needs to be multiplied by the scalability factor.
+
+	\begin{equation}
+		Attainable \; Performance = min(CP_{PE} \times SC, CI \times BW)
+	\end{equation}
+
+	this relates computational performance to resource consumption.
+
+	\item[I/O bandwidth] In the original roofline model the off-chip memory is considered as the only bound on the performance of a system. Because of the nature of FPGA's where multiple means of I/O are available at the same time these all have to be considered. The roofline model should all take these into consideration and thus have an I/O bandwidth roof and possibly multiple I/O bandwidth ceilings.
+
+	\item[Roofs and ceilings] Due to the fact that the computational intensity and the computational performance both are dependent on the implementation of the algorithm, the computational performance roofline will no longer be a constant. Also a number of ceilings have to be included to represent the different optimisation and I/O possibilities.
+
+	\item[Computational intensity] Because the CI influences both the SC and the CP$_{PE}$ it is the key to detemining the roofline model. In the original roofline model the CI is modified through the use of code adjustments or optimizations. In the roofline model for FPGA the preffered methods of modifying the CI is through optimizations or through increasing the data locality of the implementation. An example of an optimization that influences the CI is loop unrolling.
+
+\end{description}
+
+
+
 \section{Pragma's influencing the memory architecture implementation}
 
-The way memory accesses are implemented are an important factor influencing the performance of an IP-Core. Buffers have a large influence on the operational intensity. Increasing operational intensity moves the implementation from memory bound area of the roofline model to the compute bound area of the roofline model.\\
+The way memory accesses are implemented are an important factor influencing the performance of an IP-Core. Buffers have a large influence on the computational intensity. Increasing computational intensity moves the implementation from memory bound area of the roofline model to the compute bound area of the roofline model.\\
 In \emph{High Level} programming languages memory gets abstracted to variables and array's. These abstractions need to be translated into something that can be implemented in hardware. For FPGA's this means choosing between \emph{block ram} or registers. The process of translating the memory constructs into the most fitting type of physical memory is controlled by the HLS compiler but can be influenced by using directives or pragma's. Especially the way arrays are translated into hardware is of importance. For this purpose a couple of directives are available.\\
 
 \begin{description}
@@ -59,15 +106,15 @@ The template of \texttt{ap\_window} is \texttt{<typename T, int LROW, int LCOL>}
 The \texttt{dim=0} means that all dimensions should be partitioned. The \texttt{complete} keyword signifies that this partitioning should be done for the whole array.
 
 
-\subsection{influence of memory architecture on the operational intensity}
+\subsection{influence of memory architecture on the computational intensity}
 
-This hierarchical structure of the memory influences the operational intensity of the algorithm. The numerator is determined by the number of bytes being processed by the core. Every iteration one value gets read from the external memory and one value gets written.  There are 32 bits per pixel, so there are 4 bytes per pixel. this means that with height H and width W there are:
+This hierarchical structure of the memory influences the computational intensity of the algorithm. The numerator is determined by the number of bytes being processed by the core. Every iteration one value gets read from the external memory and one value gets written.  There are 32 bits per pixel, so there are 4 bytes per pixel. this means that with height H and width W there are:
 
 \[
 4 * 2 * ( H * W )
 \]
 
-bytes being read/written to/from the memory. This is the denominator in the expression of the operational intensity.\\
+bytes being read/written to/from the memory. This is the denominator in the expression of the computational intensity.\\
 The numerator is dependent on the number of pixels being calculated by the core. The core used in the TRD doesn't calculate the pixels on the outer rim of the image and instead uses these as padding. 
 
 \begin{lstlisting}

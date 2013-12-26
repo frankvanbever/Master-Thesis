@@ -38,20 +38,46 @@ The Zynq-7000 System on Chip combines a dual core ARM Cortex-A9 with Xilinx prog
 	\subsection{Programmable Logic}
 	The programmable logic provides the same functionality that can be expected from a Xilinx FPGA. The PL in 7z010 and 7z020 Zynq SoCs is based on Artix-7 FPGAs whereas the PL in 7z030, 7z045 and 7z100 SoCs is based on Kintex-7 FPGA logic. This PL can be coupled through a couple of different interconnects, with varying degrees of interconnectedness between the PL and the PS. Of note here is that the PS has to be booted first and the PL logic has to be configured from the PL at boot or at a later time. This is another example of the shift to a more software centered view. The system has all the features one can expect from an FPGA: configurable logic blocks with look-up tables, a number of 36 KB block RAMs, DSP348E slices and configurable IO. The PL side also contains an Analog to Digital converter, and in the larger varieties of the Zynq SoC an integrated PCI Express block.
 
-
-
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.35]{/home/frank/School/thesis_text/images/zynq_overview.png}
-\caption{Zynq -7000 SoC overview}
+\includegraphics[scale=0.5]{/home/frank/School/thesis_text/images/zynq_block_diagram.png}
+\caption{Zynq -7000 SoC overview \cite{anon._zynq-7000_2013}}
 \label{img:zynq_overview}
 \end{figure}
 
 	\subsection{Interconnect}
-	The interconnect system has proven to be the The Advanced Microcontroller Bus Architecture (AMBA) is an open standard specification for a bus system used in SoCs to interconnect and manage different functional blocks. 
+	The interconnect system is located in the PS but because of it's influence on performance it warrants its own section. The interconnect system is comprised of a number of switches to connect the different parts of the system using the AXI point-to-point protocol. The AXI protocol is part of the ARM Advanced Microcontroller Bus Architecture version 3.0. These AXI interconnects are the primary means of communication between the PS and the PL. There are a number of different interface ports between the PS and the PL:
+
+		\begin{description}
+			\item[AXI\_HP] There are four AXI\_HP interfaces, connecting PL masters with high bandwidth datapaths to the DDR and OCM memories. Each interface is buffered with 2 FIFOs and is configurable to be 32 or 64 bits wide.
+			\item[AXI\_GP] The four general purpose AXI\_GP ports are divided into 2 master ports and 2 slave ports. These ports don't have FIFO buffering which makes them less suitable for high performance use. 
+			\item[AXI\_ACP] The Accelerator coherency port is a 64-bit AXI slave interface that directly connects the PL to the APU caches. This is done through the snoop control unit and can enforce coherency if requested. 
+		\end{description}
+
+	The actual interconnection is done through a number of switches. Amongst these are the snoop control unit, the L2 cache controller and a couple of ARM NIC-301 based interconnect switches.
+
+		\begin{description}
+			\item[Snoop Control Unit] Although the SCU is in essence not a switch, its behavior in regards to the transfer of data from its AXI slave ports to its AXI master ports makes it function as a switch.
+			\item[Central Interconnect] The central interconnect is the core of the interconnect network in the Zynq SoC.\
+			\item[Master Interconnect] The master interconnect connects the Master switches the traffic from the AXI\_GP ports as well as traffic coming from the device configuration core and the debug access port.
+			\item[Slave Interconnect] The slave interconnect switches traffic comming from the central interconnect to AXI\_GP, I/O peripherals, APB connections, etc.
+			\item[Memory Interconnect] The memory interconnect switches high speed traffic comming from the AXI\_HP ports to DDR and on-chip RAM.
+			\item[OCM Interconnect] The on-chip memory connect switches the traffic from the central interconnect and the memory interconnect.
+		\end{description}
+
+		A diagram of the way these interconnects are organized can be found in figure \ref{img:zynq_intereconnect}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.55]{./images/interconnect_block_diagram.png}
+\caption{Zynq Interconnect System Block Diagram \cite{anon._zynq-7000_2013}}
+\label{img:zynq_intereconnect}
+\end{figure}
+
+\section{Toolchain}
 
 
-	The AXI specification which is part of AMBA is targeted at high performance, high frequency systems. The Achilles' heel of HPC is usually costly communications. It would be interesting to research the performance of an on-chip interconnect system and a typical PCIe bus.Due to the recent launch of the zynq-7000 architecture there is little to no academic information to be found about it.\\
-	Profiling for this platform is done through the Xilinx SDK software. It needs to be noted that the profiler cannot profile the hardware implemented in the programmable logic. For this other tools have to be used.[23]\\
-	The board which will be used for this implementation is the Xilinx ZC702 which contains the XC7Z020 CLG484-1 AP SoC combined with the Video and Imaging kit. This contains a high definition camera and the necessary board to interface it with the SoC. 
+
+\section(Targeted Reference Design 14.5)
+
 

@@ -5,18 +5,18 @@
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|r|r|r|r|}
-\hline
- & \multicolumn{1}{l|}{\textbf{BRAM\_18K}} & \multicolumn{1}{l|}{\textbf{DSP48E}} & \multicolumn{1}{l|}{\textbf{FF}} & \multicolumn{1}{l|}{\textbf{LUT}} \\ \hline
-\textbf{Original directives} & 3 & 19 & 1487 & 1412 \\ \hline
-\textbf{No pragma} & 5 & 4 & 802 & 1475 \\ \hline
-\textbf{loop\_flatten\_on} & 3 & 23 & 1764 & 1668 \\ \hline
-\textbf{loop\_flatten\_II\_2} & 3 & 23 & 1777 & 1875 \\ \hline
-\textbf{no\_dependence} & 3 & 19 & 1487 & 1412 \\ \hline
-\textbf{no\_pipeline} & 5 & 4 & 802 & 1475 \\ \hline
-\textbf{only dependence} & 5 & 4 & 786 & 1534 \\ \hline
-\textbf{only loop flattening} & 5 & 8 & 1050 & 1783 \\ \hline
-\textbf{only pipelining} & 3 & 23 & 1851 & 1849 \\ \hline
+\begin{tabular}{rcccc}
+\toprule
+ & \textbf{BRAM\_18K} & \textbf{DSP48E} & \textbf{FF} & \textbf{LUT}\\ \midrule
+\textbf{Original directives} & 3 & 19 & 1487 & 1412 \\ 
+\textbf{No pragma} & 5 & 4 & 802 & 1475 \\ 
+\textbf{loop\_flatten\_on} & 3 & 23 & 1764 & 1668 \\ 
+\textbf{loop\_flatten\_II\_2} & 3 & 23 & 1777 & 1875 \\ 
+\textbf{no\_dependence} & 3 & 19 & 1487 & 1412 \\ 
+\textbf{no\_pipeline} & 5 & 4 & 802 & 1475 \\ 
+\textbf{only dependence} & 5 & 4 & 786 & 1534 \\ 
+\textbf{only loop flattening} & 5 & 8 & 1050 & 1783 \\ 
+\textbf{only pipelining} & 3 & 23 & 1851 & 1849 \\ \bottomrule
 \end{tabular}
 \end{center}
 \caption{Utilization Estimates}

@@ -143,3 +143,26 @@ These UIO device drivers are made available to the user through the device node 
 
 \subsubsection{Application}
 There are 2 versions of the application available: a version with a Qt based GUI and a commandline based application. The application lets the user to select between 2 video sources, the TPG or the HDMI input, and apply 2 implementations of the Sobel filter on these inputs. One implementation is done in software and runs on ARM processor, the other one is a vivado HLS generated core. The Qt application also has a readout of the throughput of the system.
+
+
+\subsection{Sobel Operator}
+
+The described system performsedge detection using the sobel operator on the video data. The sobel operator computes an approximation of the gradient. The computation is done by convolving the image with 2 $3 \times 3$ kernels.
+
+\begin{equation}
+G_{x} = 
+\begin{bmatrix}
++1 & 0 & -1 \\
++2 & 0 & -2 \\
++1 & 0 & -1
+\end{bmatrix}
+\hspace{20mm}
+G_{y} = 
+\begin{bmatrix}
++1 & +2 & +1 \\
+0 & 0 & 0 \\
+-1 & -2 & -1 \\
+\end{bmatrix}
+\end{equation}
+
+The combination of these operators give an approximation of the gradient in both the x and the y direction. The sum of the absolute values of these two approximations gives the edge weight. It shows whether a location is close to an abrupt change in intensity in an image, an edge. By thresholding the edges can be separated from the rest of the image. The Sobel operator falls under dwarf number 6: structured grid which puts it in the cross section of the CPU, GPGPU and FPGA categories. The sobel oparator is thus a good fit for the Zynq platform. 

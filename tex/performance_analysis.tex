@@ -4,18 +4,18 @@
 
 \section{Roofline Model}
 
-The roofline model as proposed in \cite{Williams:2009:RIV:1498765.1498785} provides a visual model to gain insight into the factors influencing the performance of multicore CPU's.
+The roofline model as proposed provides a visual model to gain insight into the factors influencing the performance of multicore CPU's.\cite{Williams:2009:RIV:1498765.1498785}
 It is based on the observation that the off-chip memory bandwidth is the constraining resource on the performance of a system.\cite{patterson2004latency}  The roofline model is a plot of the attainable floating point operations per second in function of the computational intensity. The computational intensity (CI) is the number of floating-point operations per byte fetched from the off-chip RAM memory. The roofline model thus relates the demands of an application on the memory system to the maximum attainable performance.
 An example plot of the roofline model is given in figure \ref{img:roofline_example}.\\
 
-There are two main factors influencing the upper bound on the performance. The first one is the peak memory bandwidth (BW). The peak memory bandwidth is represented by the sloped  black line on the left side of the graph. An application that hits the roof in this area is called memory bound. An example of an computational intensity resulting in memory-bound operation is given by the red line in \ref{img:roofline_example} With increasing computational intensity the performance increases up to the ridge point. The x-coordinate of the ridge point represents the minimal computational intensity an application needs to reach to get maximum performance from the architecture. This maximum performance is the maximum computational performance (CP) and is represented by the flat line on the right side of figure \ref{img:roofline_example}. The dashed blue line shows an application of which the performance hits the roof in the computational performance area.
+There are two main factors influencing the upper bound on the performance. The first one is the peak memory bandwidth (BW). The peak memory bandwidth is represented by the sloped black line on the left side of the graph in figure \ref{img:roofline_example}. An application that hits the roof in this area is called memory bound. An example of an computational intensity resulting in memory-bound operation is given by the red line in \ref{img:roofline_example} With increasing computational intensity the performance increases up to the ridge point. The x-coordinate of the ridge point represents the minimal computational intensity an application needs to reach to get maximum performance from the architecture. This maximum performance is the maximum computational performance (CP) and is represented by the flat line on the right side of figure \ref{img:roofline_example}. The dashed blue line shows an application of which the performance hits the roof in the computational performance area.
 The relation between CI, BW and CP are given by the following formula.
 
 \begin{equation}
 Attainable\;GFlops/sec = min \left( BW \times CI \; , \; CP \right)
 \end{equation}
 
-The roofline model provides an upper bound to the performance of a certain architecture, but an application is not guaranteed to perform at this upper bound. Only if sufficient use is made of the available resources and optimizations the performance can reach the roof. The effect on the maximum attainable performance on the performance of an architecture can be represented by what is called a \emph{ceiling}. In figure \ref{img:roofline_example} there are 2 examples of a ceiling: an I/O bandwidth ceiling represented by the dashed cyan line and a computational ceiling represented by the dashed green line. 
+The roofline model provides an upper bound to the performance of a certain architecture, but an application is not guaranteed to perform at this upper bound. Only if sufficient use is made of the available resources and optimizations, can the performance reach the roof. The effect on the maximum attainable performance on the performance of an architecture can be represented by what is called a \emph{ceiling}. In figure \ref{img:roofline_example} there are 2 examples of a ceiling: an I/O bandwidth ceiling represented by the dashed cyan line and a computational ceiling represented by the dashed green line. 
 
 \begin{figure}[H]
 \centering
@@ -24,13 +24,13 @@ The roofline model provides an upper bound to the performance of a certain archi
 \label{img:roofline_example}
 \end{figure}
 
-Though the roofline model has been conceived as a tool for the estimation of performance of multicore CPU architectures, it has been adapted for use with other architectures such as GPU's\cite{spieringsembedded} and FPGA's\cite{spieringsembedded,daperformance}.
+Although the roofline model has been conceived as a tool for the estimation of performance of multicore CPU architectures, it has been adapted for use with other architectures such as GPU's\cite{spieringsembedded} and FPGA's\cite{spieringsembedded,daperformance}.
 The roofline model in it's default form is inadequate to describe the maximum attainable performance of an FPGA based system because of the flexibility of FPGA's. In \cite{daperformance} a number of extensions are proposed to make the roofline model more suitable for FPGA's:
 \begin{description}
 	
-	\item[Operations] Because floating-point operations are prohibitively expensive area-wise they are often replaced by alternatives such as fixed-point operations. For this reason byte-operations [Bops] are proposed as a more general alternative to the more CPU/GPU specific floating-point operations.
+	\item[Operations] Because floating-point operations are prohibitively expensive area-wise, they are often replaced by alternatives such as fixed-point operations. For this reason byte-operations [Bops] are proposed as a more general alternative to the more CPU/GPU specific floating-point operations.
 
-	\item[Scalability] Consider a processing element (PE) that contains all the necessary resources to perform the functionality of the algorithm. If the FPGA has enough resources this allows for multiple instantiations of the PE. The scalability factor is given by following formula:
+	\item[Scalability] A processing element (PE) is defined as the hardware that contains all the necessary resources to perform the functionality of the algorithm. If the FPGA has enough resources this allows for multiple instantiations of the PE. The scalability factor is given by following formula:
 
 	\begin{equation}
 		SC = \left[\frac{Available\;Resources}{Resource\;consumption \; per \; PE}\right]
@@ -42,13 +42,13 @@ The roofline model in it's default form is inadequate to describe the maximum at
 		Attainable \; Performance = min(CP_{PE} \times SC, CI \times BW)
 	\end{equation}
 
-	this relates computational performance to resource consumption.
+	This relates computational performance to resource consumption.
 
 	\item[I/O bandwidth] In the original roofline model the off-chip memory is considered as the only bound on the performance of a system. Because of the nature of FPGA's where multiple means of I/O are available at the same time these all have to be considered. The roofline model should all take these into consideration and thus have an I/O bandwidth roof and possibly multiple I/O bandwidth ceilings.
 
-	\item[Roofs and ceilings] Due to the fact that the computational intensity and the computational performance both are dependent on the implementation of the algorithm, the computational performance roofline will no longer be a constant. Also a number of ceilings have to be included to represent the different optimization and I/O possibilities.
+	\item[Roofs and ceilings] Due to the fact that the computational intensity and the computational performance are both dependent on the implementation of the algorithm, the computational performance roofline will no longer be a constant. Also a number of ceilings have to be included to represent the different optimization and I/O possibilities.
 
-	\item[Computational intensity] Because the CI influences both the SC and the CP$_{PE}$ it is the key to detemining the roofline model. In the original roofline model the CI is modified through the use of code adjustments or optimizations. In the roofline model for FPGA the preffered methods of modifying the CI is through optimizations or through increasing the data locality of the implementation. An example of an optimization that influences the CI is loop unrolling.
+	\item[Computational intensity] Because the CI influences both the SC and the CP$_{PE}$, it is the key to determining the roofline model. In the original roofline model the CI is modified through the use of code adjustments or optimizations. In the roofline model for FPGA the preferred methods of modifying the CI is through optimizations or through increasing the data locality of the implementation. An example of an optimization that influences the CI is loop unrolling.
 
 \end{description}
 
@@ -57,7 +57,7 @@ The roofline model in it's default form is inadequate to describe the maximum at
 \subsection{Pragma's influencing the memory architecture implementation}
 
 The way memory accesses are implemented are an important factor influencing the performance of an IP-Core. Using buffers is a way to increase the computational intensity, thereby decreasing the load on the memory 
-In \emph{High Level} programming languages memory gets abstracted to variables and array's. These abstractions need to be translated into something that can be implemented in hardware. For FPGA's this means choosing between \emph{block ram} or registers. The process of translating the memory constructs into the most fitting type of physical memory is controlled by the HLS compiler but can be influenced by using directives or pragma's. Especially the way arrays are translated into hardware is of importance. For this purpose a couple of directives are available.\\
+In \emph{High Level} programming languages memory gets abstracted to variables and array's. These abstractions need to be translated into something that can be implemented in hardware. For FPGA's this means choosing between \emph{block ram} or registers. The process of translating the memory constructs into the most fitting type of physical memory is controlled by the HLS compiler. This process can be influenced by using directives or pragma's. Especially the manner in which arrays are translated into hardware is of importance. For this purpose a couple of directives are available.\\
 
 \begin{description}
 
@@ -71,38 +71,38 @@ In \emph{High Level} programming languages memory gets abstracted to variables a
 
 \end{description}
 
-In systems doing video processing buffers are usually employed to exploit the spatial and temporal data locality. In the example of the TRD there are 2 abstractions implemented: \texttt{ap\_linebuffer} and \texttt{ap\_window}.
+Video processing systems usually employ buffers to benefit from spatial and temporal locality of reference. In the example of the TRD there are 2 abstractions implemented: \texttt{ap\_linebuffer} and \texttt{ap\_window}.
 
 \subsection{\texttt{ap\_linebuffer} Class}
 
 The class \texttt{ap\_linebuffer} is a generic C++ implementation of the linebuffer described in XAPP793. A linebuffer is described as a multi-dimensional shift-register. A linebuffer needs to be able to be read and written to in the same cycle to maximize performance. The dual port nature of block RAM makes it the ideal component for this abstraction.
-Because the \texttt{ap\_linebuffer} class is generic its behavior needs to be defined in the application. The template for the \texttt{ap\_linebuffer} class is \texttt{<typename T, int LROW, int LCOL>}. A type, the number of rows and the number of columns need to be specified. This is done in the \texttt{sobel.h} file by the following line:
+Because the \texttt{ap\_linebuffer} class is generic its behavior needs to be defined in the application. The template for the \texttt{ap\_linebuffer} class is \texttt{<typename T, int LROW, int LCOL>}. A type, the number of rows and the number of columns need to be specified. These definitions are in the \texttt{sobel.h} file:
 
 
 \skipbig{\hlsdirective{typedef ap\_linebuffer<unsigned char, 3, MAX\_WIDTH> Y\_BUFFER;}}
 
 
 The parameters of the template are used to determine the size of the only variable of the class, -the array M of type T with LROW rows and LCOL columns.\\
-This array get partitioned by the following directive:
+This array gets partitioned by the following directive:
 
 \skipbig{\hlsdirective{\#pragma AP ARRAY\_PARTITION variable=M dim=1 complete}}
 
 
-This means that the first dimension, the number of rows, get partitioned into different block RAMs. This is also reported by the vivado HLS tool. buff\_A is the line buffer used throughout the implementation.\\
+This means that the first dimension, the number of rows, get partitioned into different block RAMs. This is also reported by the Vivado HLS tool. buff\_A is the line buffer used throughout the implementation.\\
 
 \medskip
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.8]{/home/frank/School/thesis_text/images/trd_original_buffer_partitioning.PNG} 
-\caption{paritioning of an array in multiple block RAM instances}
+\caption{Partitioning of an array in multiple block RAM instances}
 \end{figure}
 
 
 \subsection{\texttt{ap\_window} Class}
 
 The second class used in the application is a generic implementation of the memory window described in XAPP793. It is a combination of shift-registers forming a 2-dimensional data storage element of N pixels centered on a pixel P. Usually these are implemented as flip-flops because they contain relatively few elements who need to be simultaneously available for a calculation. This is achieved through completely partitioning the memory into registers, preventing it from being implemented by a block RAM.
-The template of \texttt{ap\_window} is \texttt{<typename T, int LROW, int LCOL>}. These parameters are used for the only variable in the class, an array M of type T with LROW rows and LCOL cols. Analog to the linebuffer class the programmer here also needs to define the type, number of rows and number of columns of array M. The array gets paritioned into registers by the following directive:
+The template of \texttt{ap\_window} is \texttt{<typename T, int LROW, int LCOL>}. These parameters are used for the only variable in the class, an array M of type T with LROW rows and LCOL cols. Analog to the linebuffer class the programmer here also needs to define the type, number of rows and number of columns of array M. The array gets partitioned into registers by the following directive
 
 
 \skipbig{\hlsdirective{\#pragma AP ARRAY\_PARTITION variable=M dim=0 complete}}
@@ -111,16 +111,16 @@ The template of \texttt{ap\_window} is \texttt{<typename T, int LROW, int LCOL>}
 The \texttt{dim=0} means that all dimensions should be partitioned. The \texttt{complete} keyword signifies that this partitioning should be done for the whole array.
 
 
-\subsection{influence of memory architecture on the computational intensity}
+\subsection{Influence of memory architecture on the computational intensity}
 
-This hierarchical structure of the memory influences the computational intensity of the algorithm. The numerator is determined by the number of bytes being processed by the core. Every iteration one value gets read from the external memory and one value gets written.  There are 32 bits per pixel, so there are 4 bytes per pixel. this means that with height H and width W there are:
+This hierarchical structure of the memory influences the computational intensity of the algorithm. The numerator is determined by the number of bytes being processed by the core. Every iteration one value gets read from the external memory and one value gets written.  There are 32 bits per pixel, so there are 4 bytes per pixel. This means that with height H and width W there are:
 
 \begin{equation} \label{eq:orig_den}
 4 * 2 * ( H * W )
 \end{equation}
 
-bytes being read/written to/from the memory. This is the denominator in the expression of the computational intensity.\\
-The numerator is dependent on the number of pixels being calculated by the core. The implementation of the Sobel core doesn't calculate the values on the pixels of the outer rim as can be seen in code listing \ref{lst:sobelpix}
+bytes being read or written to or from the memory. This is the denominator in the expression of the computational intensity.\\
+The numerator is dependent on the number of pixels being calculated by the core. The implementation of the Sobel core doesn't calculate the values on the pixels of the outer rim, as can be seen in code listing \ref{lst:sobelpix}
 
 \begin{lstlisting}[caption=Sobel Code Snippet, captionpos=b, label=lst:sobelpix]
 
@@ -138,7 +138,7 @@ else{
 
 \end{lstlisting}
 
-This however doesn't influence the computational intensity if one interprets a processing element as being all the necessary resources to perform the functionality of the algorithm. Even More so, these pixels also have to be read from memory and are already present in the denominator part of the expression.
+This however doesn't influence the computational intensity if one interprets a processing element as being all the necessary resources to perform the functionality of the algorithm. Even more so, these pixels also have to be read from memory and are already present in the denominator part of the expression.
 
 
 \begin{equation} \label{eq:orig_num}
@@ -156,9 +156,9 @@ CI = \frac{H \times W}{4 \times 2 \times ( H \times W )}
 
 
 
-\section{Pramga's influencing throughput}
+\section{Pragma's influencing throughput}
 
-\subsection{Orignal Pragma's}
+\subsection{Original Pragma's}
 \label{sec:original_pragma}
 
 The original TRD has 3 pragma's applied to it:
@@ -175,22 +175,21 @@ These all influence the system in a distinct way.
 
 \paragraph{Loop Flattening} This directive combines nested loops. This removes the need for the clockcycle needed to enter and leave the loop. It needs to be applied to the inner loop of a set of nested loops. In the TRD loop flattening is explicitly disabled.
 
-\paragraph{Dependence} The compiler tries to identify dependencies between calculations or resources. Sometimes this automatic identification of dependencies is too conservative because the compiler doesn't have some information. For this reason the \emph{dependence} directive exists, allowing the programmer to explicitly state that there are or aren't dependencies for a certain variable. There are two types of dependence:
+\paragraph{Dependence} The compiler tries to identify dependencies between calculations or resources. Sometimes this automatic identification of dependencies is too conservative because the compiler does not have the necessary information. For this reason the \emph{dependence} directive exists, allowing the programmer to explicitly state that there are or aren't dependencies for a certain variable. There are two types of dependence:
 
 \begin{description}
-\item[Inter] The dependence is between different iterations of the same loop. If the dependence is set to false this will allow the loop to be unrolled
-\item[Intra] The dependence is inside the iteration. If the dependence is set to be false the compiler will attempt to reorder the operations for the most optimal performance.
+\item[Inter] The dependence is between different iterations of the same loop. If the dependence is set to `false', the compiler will not prevent the loop from being unrolled.
+\item[Intra] The dependence is inside the iteration. If the dependence is set to be `false' the compiler will attempt to reorder the operations for the most optimal performance.
 \end{description}
 
-In the case of the TRD the inter-dependence of the variable buff\_A is set to false.
+In the case of the TRD the inter-dependence of the variable buff\_A is set to `false'.
 
-\paragraph{Pipeline} The directive set\_directive\_pipeline is used to control the pipelining of loops and functions. Each function or loop on which this directive is used can read a new input every N clockcycles. This variable N is called the \emph{Initiation Interval} or II for short. In the case of the TRD pipelining is applied to the inner loop, with an Initiation Interval equal to 0.
+\paragraph{Pipeline} The directive set\_directive\_pipeline is used to control the pipelining of loops and functions. Each function or loop on which this directive is used can read a new input every N clockcycles. This variable N is called the \emph{Initiation Interval} or II for short. Pipelining is applied to the inner loop, with an Initiation Interval equal to 1.
 
 
 \paragraph{Throughput}
 \label{sec:original_througput}
-
-Given the analysis generated by Vivado HLS presented in table \ref{tab:analysis_data} it is possible to calculate the throughput of the system. First of all it needs to be noted whether the system satisfies the timing requirements. The analysis gives us an estimated clock period of 4.2 ns with an uncertainty of 0.62 ns placing it well within the bounds of the required 5 ns clock period.
+Given the analysis generated by Vivado HLS, presented in table \ref{tab:analysis_data}, it is possible to calculate the throughput of the system. First of all it needs to be noted whether the system satisfies the timing requirements. The analysis gives us an estimated clock period of 4.2 ns with an uncertainty of 0.62 ns placing it well within the bounds of the required 5 ns clock period.
 The system needs 22 cycles to complete. Of these, there are 2 initialization cycles, 20 cycles to finish the outer loop, of which 19 cycles are the inner loop. The system employs pipelining on the innermost loop, which results in an initiation interval of 1.
 
 I denotes a number of iterations, n a number of cycles. N is the number of cycles necessary to calculate one frame:
@@ -222,7 +221,7 @@ Entering the numbers found in table \ref{tab:analysis_data} gives us a value of 
 \subsection{No pragma's}
 \label{sec:nopragma}
 
-The original system performance satisfies the real time constraint placed on the system. To study the impact the directives have on the performance of the system all directives were removed from the  system. The analysis generated by Vivado HLS is presented in the second column of table \ref{tab:analysis_data}. The first observation that can be done is that the system performs the same operation in only 16 clock cycles instead of 22, a decrease of 27\%. Because the system has no pipelining the initiation interval is 14 cycles. A new value gets read each iteration.
+The original system performance satisfies the real time constraint placed on the system. To study the impact the directives have on the performance of the system, all directives were removed from the  system. The analysis generated by Vivado HLS is presented in the second column of table \ref{tab:analysis_data}. The first observation that can be made is that the system performs the same operation in only 16 clock cycles instead of 22, a decrease of 27\%. Because the system has no pipelining, the initiation interval is 14 cycles. A new value gets read each iteration.
 
 The number of cycles needed to calculate one frame is given by:
 
@@ -243,18 +242,18 @@ It is clear that these pragma's have a profound effect on the performance of a s
 All sensible combinations of these pragma's have been tested and the results are represented in table  \ref{tab:analysis_data}. The corresponding resource utilization estimates are presented in table \ref{tab:utilization_estimates}.
 
 \paragraph{Only Dependence}
-Using only the following directive:
+Using only the following directive
 
 \skipbig{\hlsdirective{set\_directive\_dependence -variable \&buff\_A -type inter \\ -dependent false "sobel\_filter/sobel\_filter\_label0"}}
 
-doesn't have any measurable effect on the performance on the system compared to the one presented in section \ref{sec:nopragma}. The calculations for the performance stay the same at 0.47 FPS
+doesn't have any measurable effect on the performance on the system compared to the one presented in section \ref{sec:nopragma}. The calculations for the performance stay the same at 0.47 FPS.
 
 \paragraph{Only Loop Flattening}
-Using only the following directive:
+Using only the following directive
 
 \skipbig{\hlsdirective{set\_directive\_loop\_flatten "sobel\_filter/sobel\_filter\_label0"}}
 
-Combines the 2 loops iterating over the rows and the columns into 1 loop. Because this means that there is only one iteration to take into account this changes the throughput of the system. The number of cycles necessary to process a frame is given by:
+combines the 2 loops iterating over the rows and the columns into 1 loop. Because this means that there is only one iteration to take into account, this changes the throughput of the system. The number of cycles necessary to process a frame is given by:
 
 % 1/((init cycles + (outer loop iterations * inner loop iterations) * outer loop cycles)
 
@@ -264,23 +263,23 @@ N = n_{init} + (I_{outer\;loop} \times I_{inner\;loop}) \times n_{loop}
 
 \bigskip
 
-Using formulas \ref{eq:frametime} and \ref{eq:fps} and the values found in \ref{tab:analysis_data} a performance of 6,88 FPS can be calculated. 
+Using formulas \ref{eq:frametime} and \ref{eq:fps} and the values found in \ref{tab:analysis_data}, a performance of 6,88 FPS can be calculated. 
 
-\paragraph{Only pipelining} Using the following directive:
+\paragraph{Only pipelining} Using the following directive
 
 \skipbig{\hlsdirective{set\_directive\_pipeline -II 1 "sobel\_filter/sobel\_filter\_label0"}}
 
-Flattens the loops and pipelines them. This has a profound effect on the performance of the system. II is the initiation interval.
+Flattens the loops and pipelines them. This has a profound effect on the system performance. II is the initiation interval.
 
 %((Init + outer loop cycles  + ((outer loop iterations * inner loop iterations)-1) * initiation interval)
 
 \begin{equation} \label{eq:only_pipelining}
-N  = n_{init} + n_{outer_loop} + ((I_{inner\;loop} \times I_{outer\;loop}) - 1) \times II
+N  = n_{init} + n_{outer\;loop} + ((I_{inner\;loop} \times I_{outer\;loop}) - 1) \times II
 \end{equation}
 
 \bigskip
 
-Using the values found in table \ref{tab:analysis_data} gives a performance of 48.15 FPS. This is a considerable improvement but doesn't reach the required 60 FPS to statisfy the requirements placed on the system by the HDMI protocol. Noteworthy in this case is that the system has an initiation interval of 2. This causes a pixel to be output only every 2 cycles instead of every cycle after the first iteration. The compiler defaults to the lowest II it can use. As an experiment the initiation interval was set to 2 in the directive. This didn't have any measurable influence on the system.
+Using the values found in table \ref{tab:analysis_data} gives a performance of 48.15 FPS. This is a considerable improvement but doesn't reach the required 60 FPS to satisfy the requirements placed on the system by the HDMI protocol. Noteworthy in this case is that the system has an initiation interval of 2. This causes a pixel to be output only every 2 cycles instead of every cycle after the first iteration. The compiler defaults to the lowest II it can use. As an experiment the initiation interval was set to 2 in the directive. This didn't have any measurable influence on the system.
 
 \paragraph{Loop flattening on}
 Using following directives:

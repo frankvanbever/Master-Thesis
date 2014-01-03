@@ -20,7 +20,50 @@ Another important feature of ROCCC are the so-called smart buffers. These attemp
 
 \section{Xilinx Vivado High Level Synthesis Tool}
 \label{sec:vivado_HLS}
-Vivado High-Level Synthesis is part of the Xilinx Vivado design suite. It is the product of the acquisition of AutoESL and the re-branding of their AutoPilot High-Level Synthesis tool. Vivado represents the next evolution of Xilinx tools fitting in their vision of an \quotationmarks{all programmable world}.  It allows C, C++ and SystemC code to be synthesized into VHDL or Verilog code. Functional simulation can be done in C, which is a great improvement over the typical VHDL or Verilog simulation. The Vivado tool is based on the Eclipse platform and incorporates the C Development tool (CDT).[15]
-\\
-Vivado HLS was as the HLS tool for this thesis because of it's integration in the Xilinx toolchain and \emph{out-of-the-box} support for the Zynq platform.
+Vivado High-Level Synthesis is part of the Xilinx Vivado design suite. It is the product of the acquisition of AutoESL and the re-branding of their AutoPilot High-Level Synthesis tool. Vivado represents the next evolution of Xilinx tools fitting in their vision of an \quotationmarks{all programmable world}.\\
+Vivado HLS translates a subset of C, C++ or SystemC into VHDL or Verilog code. This is done through 2 types of synthesis: \emph{functional synthesis} and \emph{interface synthesis}. The functional synthesis synthesizes the functional statements into RTL statements spread over different clockcycles. The interface synthesis synthesizes the function parameters into ports with specific timing protocols. To do this the HLS tool extracts the control behavior and the datapath. The control is specified in the high level language by loops and conditional statements in the code. These get translated into state transitions in a finite state machine. The datapath is determined by unrolling all the loops and evaluating all the conditional statements. After the control behavior and datapath have been extracted, the actions that need to be taken are identified and scheduled to occur during in a state. This process takes into account the timing information and optimization directives to ensure optimal performance. After all the necessary actions are scheduled, the operations are bound to a specific hardware resource or core. The binding process influences the scheduling process so binding decisions are considered during scheduling. The directives allow the programmer to optimize for different parameters such as latency, area or initiation interval. The area is the number of resources a specific implementation uses. Latency is the number of clockcycles necessary to produce an output, and the initiation interval is the number of clockcycles that need to pass before a new input can be accepted. there are also directives that allow to constrain the latency of functions or loops and the area used, as well as specify of override dependencies in the code.\\
+Vivado HLS supports a large subset of the C, C++ and SytemC languages, some constructs are not supported. Most notable are calls to the operating system, dynamic memory allocation and the C++ Standard Template Library. 
+Vivado HLS has a number of features that can improve the productivity of a developer:
+
+\paragraph{Verification}
+Verifying the functionality of an algorithm and  the correct functioning of its implementation in hardware are important steps in the development process. Manually verifying the implementation through RTL simulation is a tedious and error-prone process. For this reason it is interesting to be able to automate these tests. Vivado HLS separates the verification into two discrete processes.\\ The first is the pre-synthesis validation, which does a functional validation of the high level code. The developer needs to develop a testbench, which provides an input for the function being verified, and compares the output of this function to a so called \emph{gold standard} which is the expected output.\\
+The second verification process is the post synthesis verification. Vivado HLS provides an RTL implementation in VHDL of Verilog for which a testbench can be written. Vivado HLS also has the \texttt{cosim\_design} function which converts the high level testbench into a SystemC testbench. This low level testbench provides stimulus to the RTL code and compare the output to the \emph{gold standard}. This automation is possible when some requirements are satisfied:
+\begin{itemize}
+\item The top-level system needs to be synthesized with a supported control interface and the output ports need to have a valid signal.
+\item Certain optimizations or combination of optimization on arrays in the function interface, either as an explicit array or hidden in a struct, are not supported.
+\item The testbench needs to be self-checking, return 0 if the output is correct and a non-zero value when the output is incorrect.
+\end{itemize}
+Vivado HLS incorporates a simulation tool but also supports third-party simulators.
+
+\paragraph{Data type conversions}
+Whilst C-based data types have widths limited by byte boundaries, RTL buses don't have this constraint and can have an arbitrary width. Vivado HLS provides libraries for the supported programming languages that allow to specify the desired width between 1 and 1024 for integers in C and C++. The \texttt{\_\_SYNTHESIS\_\_} macro allows to retain the original declarations for backwards compatibility and reference purposes.\\ Vivado HLS also has libraries for fixed-point types. Fixed point operations are often preferred by HDL designers because of the reduced resource consumption. These libraries also ensure that the high-level and RTL behavior remain the same. This allows the designer to use the high-level simulations to study the effects of the reduced precision compared to floating-point representations. These fixed point data types are available in C++ and SystemC.\\
+Floating point arithmetic is supported, however not all operations are supported. 
+
+\paragraph{Interface Synthesis}
+Vivado HLS supports a number of different interfaces that can be used to convert the function arguments into RTL ports. These standard interfaces can range from control signals to elaborate handshaking protocols and memory interfaces. Vivado HLS also supports a number of bus interfaces. These differ form the standard interfaces in that they only get added to the system during the export to RTL. The supported bus interfaces are:
+\begin{itemize}
+	\item AXI4-Lite Slave
+	\item AXI4 Master
+	\item AXI4 Stream
+\end{itemize}
+
+These bus interfaces sit ``on top of'' the RTL interfaces, and only certain RTL interfaces can be connected to certain bus interfaces.
+
+\paragraph{Optimizations}
+Vivado HLS supports a large number of optimizations on both the function level and the loop level.
+
+The available function optimizations are
+
+\begin{itemize}
+	\item 	\textbf{Inline} The \emph{inline} directive places the function in-line, removing all hierarchy. This removes the cycles needed to enter and leave the function.
+	\item 	\textbf{Instantiate}  By default functions remain separate hierarchical blocks in the RTL and all the instantiations use the same RTL implementation. The \emph{instantiate} directive lets the synthesizer create a separate,
+	unique and optimized implementation for each instance of the function. 
+	\item 	\textbf{Dataflow} The \emph{dataflow} directive will have the synthesizer attempt to execute each RTL function block at the same time. If data dependencies prevent this the interval will be modified until the dependencies are satisfied. This effectively pipelines the communication between the functions. The channels can be configured to be ping-pong or FIFO buffers. 
+	\item 	\textbf{Pipeline} Whereas the \emph{dataflow} directive pipelines the communication between different functions, the \emph{pipeline} directive pipelines the operations within a function. This allows these operations to happen concurrently. As with dataflow pipelining data dependencies can prevent pipelining. The solution is to increase the initiation interval until the dependencies are satisfied.
+	\item 	\textbf{Latency} The latency of a function can be specified using the \emph{latency} directive. The synthesis process tries to stay within the constraints set by the directive and allows timing violations in doing so. If the system cannot satisfy the constraints they are automatically relaxed. After synthesis the constraint report details whether all constraints have been satisfied.
+\end{itemize}
+
+On the loop level 
+
+Vivado HLS was as the HLS tool for this thesis because of it's integration in the Xilinx toolchain and \emph{out-of-the-box} support for the Zynq platform. 
 

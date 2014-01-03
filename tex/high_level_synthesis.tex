@@ -63,7 +63,7 @@ The available function optimizations are
 	\item 	\textbf{Latency} The latency of a function can be specified using the \emph{latency} directive. The synthesis process tries to stay within the constraints set by the directive and allows timing violations in doing so. If the system cannot satisfy the constraints they are automatically relaxed. After synthesis the constraint report details whether all constraints have been satisfied.
 \end{itemize}
 
-On the loop level 
+On the loop level a number of optimizations are available. The \emph{dataflow}, \emph{pipeline} and \emph{latency} directives are also available for loops and have the same functionality as the previously mentioned directives for functions.
 
 Vivado HLS was as the HLS tool for this thesis because of it's integration in the Xilinx toolchain and \emph{out-of-the-box} support for the Zynq platform. 
 

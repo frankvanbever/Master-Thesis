@@ -50,20 +50,77 @@ Vivado HLS supports a number of different interfaces that can be used to convert
 These bus interfaces sit ``on top of'' the RTL interfaces, and only certain RTL interfaces can be connected to certain bus interfaces.
 
 \paragraph{Optimizations}
-Vivado HLS supports a large number of optimizations on both the function level and the loop level.
+Vivado HLS supports a large number of optimizations on the function, loop and array level.
 
 The available function optimizations are
 
 \begin{itemize}
+	
 	\item 	\textbf{Inline} The \emph{inline} directive places the function in-line, removing all hierarchy. This removes the cycles needed to enter and leave the function.
-	\item 	\textbf{Instantiate}  By default functions remain separate hierarchical blocks in the RTL and all the instantiations use the same RTL implementation. The \emph{instantiate} directive lets the synthesizer create a separate,
+	
+	\item 	\textbf{Instantiate}  By default functions remain separate hierarchical blocks in the RTL and all the instantiations use the same RTL implementation. The \emph{instantiate} directive lets the compiler create a separate,
 	unique and optimized implementation for each instance of the function. 
-	\item 	\textbf{Dataflow} The \emph{dataflow} directive will have the synthesizer attempt to execute each RTL function block at the same time. If data dependencies prevent this the interval will be modified until the dependencies are satisfied. This effectively pipelines the communication between the functions. The channels can be configured to be ping-pong or FIFO buffers. 
+	
+	\item 	\textbf{Dataflow} The \emph{dataflow} directive will have the compiler attempt to execute each RTL function block at the same time. If data dependencies prevent this the interval will be modified until the dependencies are satisfied. This effectively pipelines the communication between the functions. The channels can be configured to be ping-pong or FIFO buffers. 
+	
 	\item 	\textbf{Pipeline} Whereas the \emph{dataflow} directive pipelines the communication between different functions, the \emph{pipeline} directive pipelines the operations within a function. This allows these operations to happen concurrently. As with dataflow pipelining data dependencies can prevent pipelining. The solution is to increase the initiation interval until the dependencies are satisfied.
+	
 	\item 	\textbf{Latency} The latency of a function can be specified using the \emph{latency} directive. The synthesis process tries to stay within the constraints set by the directive and allows timing violations in doing so. If the system cannot satisfy the constraints they are automatically relaxed. After synthesis the constraint report details whether all constraints have been satisfied.
 \end{itemize}
 
-On the loop level a number of optimizations are available. The \emph{dataflow}, \emph{pipeline} and \emph{latency} directives are also available for loops and have the same functionality as the previously mentioned directives for functions.
+On the loop level a number of optimizations are available. The \emph{dataflow}, \emph{pipeline} and \emph{latency} optimizations are also available for loops and have functionality comparable to the aforementioned optimizations for functions. The other ones are:
 
-Vivado HLS was as the HLS tool for this thesis because of it's integration in the Xilinx toolchain and \emph{out-of-the-box} support for the Zynq platform. 
+\begin{itemize}
+
+	\item 	\textbf{Unrolling} The default behavior for Vivado HLS is that all loops remain rolled. This means that every iteration of the loop uses the same hardware. The \emph{unroll} directive allows the designer to partially or completely split the iterations of a loop into separate entities. Multiple iterations can then be executed concurrently. Unrolling a loop presents a trade-off between resource consumption and performance. 
+
+	\item 	\textbf{Merging} A loop takes one cycle to enter and one cycle to exit from. If there are consecutive loops in the design these states are unnecessary. The \emph{merge} optimization combines these consecutive loops into one loop, no longer requiring multiple cycles to enter and exit a loop.
+
+	\item 	\textbf{Flattening} This optimization is similar to the \emph{merging} optimization, but applied to nested loops instead of consecutive loops. The nested loops are combined into one loop removing the need for extra clockcycles to enter and exit the innermost loop. When loops are nested the outermost loop cannot be pipelined. \emph{Flattening} prevents this.
+
+	\item 	\textbf{Dependence} The compiler tries to identify dependencies between calculations or resources. Sometimes this automatic identification of dependencies is too conservative because the compiler does not have the necessary information. For this reason the \emph{dependence} directive exists, allowing the programmer to explicitly state that there are or aren't dependencies for a certain variable. There are two types of dependence:
+	\begin{description}
+		\item[Inter] The dependence is between different iterations of the same loop. If the dependence is set to `false', the compiler will not prevent the loop from being unrolled.
+		\item[Intra] The dependence is inside the iteration. If the dependence is set to be `false' the compiler will attempt to reorder the operations for the most optimal performance.
+	\end{description}
+
+	\item 	\textbf{Tripcount} HLS tries to determine the maximum possible number of iterations that a loop can perform during the execution. The compiler cannot determine the actual maximum iteration of a loop. The \emph{tripcount} optimization provides this data to the compiler, so as to ensures that the synthesis report will contain valid figures for throughput and latency. This optimization does not influence the synthesis process and only exists to provide metadata to the compiler. 
+\end{itemize}
+
+Finally there are also optimizations that determine the memory architecture of the design. The way memory accesses are implemented are an important factor influencing the performance of an IP-Core. Using buffers is a way to increase the computational intensity, thereby decreasing the load on the memory 
+In \emph{High Level} programming languages memory gets abstracted to variables and array's. These abstractions need to be translated into something that can be implemented in hardware. For FPGA's this means choosing between \emph{block ram} or registers. The process of translating the memory constructs into the most fitting type of physical memory is controlled by the HLS compiler. This process can be influenced by using directives or pragma's. Especially the manner in which arrays are translated into hardware is of importance. For this purpose a couple of directives are available.\\
+
+\begin{itemize}
+
+	\item 	\textbf{Resource} The default behavior of Vivado HLS is to select the memory to be used. The \emph{resource} optimization allows the designer to override this decision and specify which type of memory needs to be used to implement an array. 
+
+	\item 	\textbf{Array Mapping} The RAMs available in an FPGA have pre-defined sizes. Having to store many arrays each in their own RAM increases the resource consumption. The \emph{array map} directive allows the designer to map multiple arrays onto one RAM reducing the resource consumption. There are two types of mapping. Horizontal mapping concatenates the original arrays to create an implementation using a single array with more elements. Vertical mapping concatenates the words in the array to create an implementation that uses a single array with a larger bit-width. 
+	
+	\item 	\textbf{Array\_Partition} The \emph{array partition} optimization performs the opposite of the \emph{array mapping} optimization. It splits a large array into a number of smaller arrays which can each be mapped onto a different RAM. This allows for multiple consecutive reads or writes to memory. There are three possible ways to partition. Block partitions separate the array into a number equally sized blocks containing consecutive elements of the original array. Cyclic partitions split the array into a number of equally sized blocks with the elements of the original array interleaved. Complete partitioning separates the array and stores the individual elements in registers. The number of blocks in which the arrays are split can be specified by a factor.
+
+	\item 	\textbf{Array\_Reshape} The \emph{array reshape} optimization combines array partitioning with vertical mapping. It takes elements from one dimension in the original array and maps them to a single element with a larger bitwidth in the reshaped array. 
+
+\end{itemize}
+
+\paragraph{Pragmas and directives}
+The aforementioned optimizations can be applied to a design using 2 methods. The first one is by embedding pragmas in the source code. In C-style languages pragmas are typically specified as preprocessor directives. These directives provide the compiler with meta-information concerning the way the code should be converted to machine code. Vivado HLS has its specific pragmas who serve the same function.
+The second method is by using the directives file, a TCL script that specifies the optimizations that need to be applied. The optimizations that can be applied are the same for both methods, which makes the two possibilities seem redundant. There are however subtle differences in the usage.\\
+Vivado HLS has a feature called a \emph{solution}. These solutions allow a designer to quickly do design space exploration. This is achieved by applying many different combinations of directives in each solution. The designer can then measure the impact and compare the performance of different solutions. This can only be achieved by using the directives file as the code is shared between solutions. Pragmas are useful when the directives need to remain the same irrespective of the solution. This is for example the case when using libraries.
+
+\paragraph{Synthesis report \& Analysis perspective}
+Vivado HLS generates a report after the synthesis has finished. This \emph{synthesis report} contains, next to some general information, performance estimates for the timing, latency an resource consumption. The timing information comprises an estimate of the smallest attainable clock period, the uncertainty and whether this estimate satisfies the target clock period. The latency information comprises an estimate of the function's latency as well as the initiation interval for the block and all sub-blocks. the utilization estimates detail the expected utilization of resources present in the FPGA such as LUTs or DSP48s. A more detailed view is also given, showing the estimates of the resource consumption of different cores.\\
+Another feature of Vivado HLS that can help in estimating the performance of an implementation is the \emph{analysis perspective}. The analysis perspective provides the designer with a graphical representation of the design's performance and resource usage, as well as the scheduling of the different operations. An example of the schedule viewer pane is given in figure \ref{img:schedule_viewer}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{./images/schedule_viewer_example.png}
+\caption{Example of the Schedule Viewer Pane}
+\label{img:schedule_viewer}
+\end{figure}
+
+The left column details the resources. Loops are marked in yellow and operations are marked in purple. The numbered columns each represent a state in the FSM. This allows the designer to see where resources are being used concurrently and where there are dependency issues preventing this. The schedule viewer also has a ``Goto Source'' command, which jumps form the selected operation to the corresponding line in the high level source code. Using this functionality the designer can link the high level code to the execution of the hardware.
+
+\paragraph{Exporting} Vivado HLS is part of Xilinx' Vivado toolchain and is backwards compatible with its ISE toolchain. This tight integration is most visible in the available export options in Vivado HLS. Dependent on the target technology and available license it can export to formats supported by the Vivado IP-catalog, Xilinx System Generator and EDK PCore. If the core is configured to use the AXI protocol the wrappers will be added in this step. The AXI wrappers are not part of the VHDL or Verilog implementation.
+\\\\
+Vivado HLS version 2013.2 was used for this thesis. 
 

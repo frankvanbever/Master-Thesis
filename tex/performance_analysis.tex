@@ -54,23 +54,6 @@ The roofline model in it's default form is inadequate to describe the maximum at
 
 \section{Factors influencing performance in a Vivado HLS core}
 
-\subsection{Pragma's influencing the memory architecture implementation}
-
-The way memory accesses are implemented are an important factor influencing the performance of an IP-Core. Using buffers is a way to increase the computational intensity, thereby decreasing the load on the memory 
-In \emph{High Level} programming languages memory gets abstracted to variables and array's. These abstractions need to be translated into something that can be implemented in hardware. For FPGA's this means choosing between \emph{block ram} or registers. The process of translating the memory constructs into the most fitting type of physical memory is controlled by the HLS compiler. This process can be influenced by using directives or pragma's. Especially the manner in which arrays are translated into hardware is of importance. For this purpose a couple of directives are available.\\
-
-\begin{description}
-
-\item[Resource] lets the programmer determine which component will be used to map a certain array to.
-
-\item[Array\_Map] Maps several smaller arrays to the same memory to decrease the resource consumption.
-
-\item[Array\_Partition] Determines how a certain array will be partitioned into smaller arrays each using their own memory to avoid the bottleneck of having to perform multiple consecutive reads. This directive also allows to partition an array completely into registers.
-
-\item[Array\_Reshape] Will rearrange an array so the elements have a larger word width. This improves the performance of the memory while maintaining the same resource consumption.
-
-\end{description}
-
 Video processing systems usually employ buffers to benefit from spatial and temporal locality of reference. In the example of the TRD there are 2 abstractions implemented: \texttt{ap\_linebuffer} and \texttt{ap\_window}.
 
 \subsection{\texttt{ap\_linebuffer} Class}
@@ -156,36 +139,18 @@ CI = \frac{H \times W}{4 \times 2 \times ( H \times W )}
 
 
 
-\section{Pragma's influencing throughput}
+\section{Directives influencing throughput}
 
-\subsection{Original Pragma's}
+\subsection{Original Directives}
 \label{sec:original_pragma}
 
-The original TRD has 3 pragma's applied to it:
+The original TRD has 3 directives applied to it:
 
 \begin{itemize}
 \item \hlsdirective{set\_directive\_loop\_flatten -off \\ "sobel\_filter/sobel\_filter\_label0"}
 \item \hlsdirective{set\_directive\_dependence -variable \&buff\_A -type inter \\ -dependent false "sobel\_filter/sobel\_filter\_label0"}
 \item \hlsdirective{set\_directive\_pipeline -II 1 \\ "sobel\_filter/sobel\_filter\_label0"}
 \end{itemize}
-
-
-
-These all influence the system in a distinct way.
-
-\paragraph{Loop Flattening} This directive combines nested loops. This removes the need for the clockcycle needed to enter and leave the loop. It needs to be applied to the inner loop of a set of nested loops. In the TRD loop flattening is explicitly disabled.
-
-\paragraph{Dependence} The compiler tries to identify dependencies between calculations or resources. Sometimes this automatic identification of dependencies is too conservative because the compiler does not have the necessary information. For this reason the \emph{dependence} directive exists, allowing the programmer to explicitly state that there are or aren't dependencies for a certain variable. There are two types of dependence:
-
-\begin{description}
-\item[Inter] The dependence is between different iterations of the same loop. If the dependence is set to `false', the compiler will not prevent the loop from being unrolled.
-\item[Intra] The dependence is inside the iteration. If the dependence is set to be `false' the compiler will attempt to reorder the operations for the most optimal performance.
-\end{description}
-
-In the case of the TRD the inter-dependence of the variable buff\_A is set to `false'.
-
-\paragraph{Pipeline} The directive set\_directive\_pipeline is used to control the pipelining of loops and functions. Each function or loop on which this directive is used can read a new input every N clockcycles. This variable N is called the \emph{Initiation Interval} or II for short. Pipelining is applied to the inner loop, with an Initiation Interval equal to 1.
-
 
 \paragraph{Throughput}
 \label{sec:original_througput}
@@ -194,7 +159,7 @@ The system needs 22 cycles to complete. Of these, there are 2 initialization cyc
 
 I denotes a number of iterations, n a number of cycles. N is the number of cycles necessary to calculate one frame:
 
-\begin{equation}
+\begin{equation}\label{eq:nframes_orig_trd}
 N_{frame} = n_{init} + I_{outer\;loop} \times ( n_{inner\;loop} + I_{inner\;loop} - 1 )
 \end{equation}
 
@@ -218,7 +183,7 @@ FPS = \frac{1}{t_{frame}}
 Entering the numbers found in table \ref{tab:analysis_data} gives us a value of 95.37 frames per second. Given that HDMI has a 60 Hz refresh rate this system satisfies that constraint.
 
 
-\subsection{No pragma's}
+\subsection{No directives}
 \label{sec:nopragma}
 
 The original system performance satisfies the real time constraint placed on the system. To study the impact the directives have on the performance of the system, all directives were removed from the  system. The analysis generated by Vivado HLS is presented in the second column of table \ref{tab:analysis_data}. The first observation that can be made is that the system performs the same operation in only 16 clock cycles instead of 22, a decrease of 27\%. Because the system has no pipelining, the initiation interval is 14 cycles. A new value gets read each iteration.
@@ -236,10 +201,10 @@ N = n_{init} + I_{outer\;loop} \times (I_{inner\;loop} \times n_{inner\;loop})
 
 Knowing the number of cycles the throughput can be calculated using formulas \ref{eq:frametime} and \ref{eq:fps} and the information found in table \ref{tab:analysis_data} . This gives us a value of 0.47 frames per second, a 203 times decrease in performance.
 
-\subsection{Other combinations of pragma's}
+\subsection{Other combinations of directives}
 
-It is clear that these pragma's have a profound effect on the performance of a system. Also noteworthy is that the directives presented in section \ref{sec:original_pragma} in no way influence the computational intensity of the implementation. Each combination of these pragma's can thus be represented as a ceiling in the roofline model.
-All sensible combinations of these pragma's have been tested and the results are represented in table  \ref{tab:analysis_data}. The corresponding resource utilization estimates are presented in table \ref{tab:utilization_estimates}.
+It is clear that these directives have a profound effect on the performance of a system. Also noteworthy is that the directives presented in section \ref{sec:original_pragma} in no way influence the computational intensity of the implementation. Each combination of these directives can thus be represented as a ceiling in the roofline model.
+All sensible combinations of these directives have been tested and the results are represented in table  \ref{tab:analysis_data}. The corresponding resource utilization estimates are presented in table \ref{tab:utilization_estimates}.
 
 \paragraph{Only Dependence}
 Using only the following directive
@@ -293,11 +258,17 @@ Using following directives:
 This flattens the loops, pipelines them and takes into consideration that there is no inter-iteration dependence conflict for the buff\_A. The expression for the number of cycles necessary is the same as in equation \ref{eq:only_pipelining}. The most notable difference is that the initiation interval is equal to 1. This gives a performance of 91.72 FPS. Vivado HLS predicts in it's synthesis report that the system will have a minimum clock period 5.25 ns. This leaves the risk that the core will cause glitches and not satisfy the requirements. Increasing the II to 2 makes the system respect the timing constraints again but lowers the performance to 48.15 FPS. 
 
 \paragraph{No dependence}
+Using following directives:
 
 \begin{itemize}
 \item \hlsdirective{set\_directive\_loop\_flatten -false  \\ "sobel\_filter/sobel\_filter\_label0"}
 \item \hlsdirective{set\_directive\_pipeline -II 1  \\ "sobel\_filter/sobel\_filter\_label0"}
 \end{itemize}
+
+The only difference with the directives of the original TRD is that the compiler isn't notified of the fact that there is no inter-dependence for the \texttt{buff\_A} variable. The same equation for the performance is given by eq. \ref{eq:nframes_orig_trd}. Using the values found in table \ref{tab:analysis_data} a performance of 95.31 FPS cam be calculated, only marginally worse than the performance of the original configuration. 
+
+
+\subsection{Resource consumption}
 
 
 

@@ -268,13 +268,27 @@ Using following directives:
 The only difference with the directives of the original TRD is that the compiler isn't notified of the fact that there is no inter-dependence for the \texttt{buff\_A} variable. The same equation for the performance is given by eq. \ref{eq:nframes_orig_trd}. Using the values found in table \ref{tab:analysis_data} a performance of 95.31 FPS cam be calculated, only marginally worse than the performance of the original configuration. 
 
 
-\subsection{Resource consumption}
+\section{Resource consumption}
+
+The resource consumption estimates for these different solutions are given in table \ref{tab:utilization_estimates}. The utilization estimates are of importance because they determine the scalability of a core and thus the maximum attainable performance. Of all the combinations of directives that were tested only the original configuration and the no\_dependence configuration satisfied the requirements for the system. Given that the resource consumption is identical for the original configuration and the no\_dependence configuration the only determining factor in choosing is the performance. Given that the original configuration has better performance, although marginally, it is the most sensible choice to use for the building of a roofline model.\\
+
+\input{/home/frank/School/thesis_text/tex/tables/utilization_estimates.tex}
+
+The original solution was exported as a Xilinx PCore and connected to the TRD system. This system was synthesized to get a more accurate prediction of the resource consumption. The results are detailed in table \ref{tab:scalability}. The difference between the roofline model of the The first noticeable difference when comparing the HLS estimates to the utilization reported from PlanAhead, found on the FILTER\_ENGINE line of the table, is that only the number of reported DSP blocks remains the same. The differences between the other reported values are likely caused by the addition of the AXI wrapper and possible redundancies in the design. The system also uses a number of IP-cores to perform necessary transformations on the data. They do not need to be duplicated to scale the system so these resources can be considered an overhead. Only the filter engine and the associated DMA engine need to be duplicated.\\
+The resource consumption in the Zynq differs from the resource consumption for regular FPGA's in that the available interfaces also need to be considered. The Zynq has 4 AXI High Performance ports and these are the constraining factor on the scalability of the TRD core. The filter engine/VDMA combination can be duplicated 3 times. 
+
+\input{/home/frank/School/thesis_text/tex/tables/trd_scalability.tex}
+
+\section{Memory Bandwidth}
+
+The memory bandwidth is 
+
+
+\section{Building the roofline model}
 
 
 
 \newpage
-
-\input{/home/frank/School/thesis_text/tex/tables/utilization_estimates.tex}
 \input{/home/frank/School/thesis_text/tex/tables/analysis_data.tex}
 
 

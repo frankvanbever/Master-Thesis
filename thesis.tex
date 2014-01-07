@@ -6,7 +6,7 @@
 
 % The following makes latex use nicer postscript fonts.
 \usepackage{times}
-\usepackage[english]{babel}
+\usepackage[dutch,english]{babel}
 \usepackage[colorlinks,urlcolor=blue,linkcolor=blue]{hyperref}
 
 
@@ -101,9 +101,17 @@
 
 \begin{document}
 
+
 \maketitlepage
 
+\newpage
+\mbox{}
+
+\maketitlepage
+
+
 \include{tex/abstract}
+\include{tex/abstract_nl}
 \include{tex/acknowledgements}
 
 % Obligatory lists
@@ -115,6 +123,7 @@
 \include{tex/platform_overview}
 \include{tex/high_level_synthesis}
 \include{tex/performance_analysis}
+\include{tex/conclusion}
 
 
 

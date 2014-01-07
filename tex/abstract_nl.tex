@@ -1,0 +1,12 @@
+% !TEX root = /home/frank/School/thesis_text/thesis.tex
+
+\chapter*{Abstract (NL)}
+
+\begin{otherlanguage}{dutch}
+
+
+Er zijn vele toepassingen die baat hebben die baat hebben bij een toegenomen performantie van de computer die ze uitvoert. In het verleden zorgde “Moore's Law” ervoor dat ontwerpers en programmeurs het sequentiële paradigma konden blijven toepassen. Door limieten in de fysica van halfgeleiders werd het halverwege het vorige decennium onhoudbaar om dit model te blijven volgen. De nood aan extra performantie bleef echter bestaan, en Moore's law was nog steeds gelding. Omwille van deze redenen werd parallellisme geïntroduceerd om voor bepaalde parallelle toepassingen te gaan versnellen. Vandaag hebben processoren in desktops en servers een multi-core processor aan boord, en alternatieven zoals de GPGPU of de FPGA kunnen extreem parallellisme bieden voor applicaties die hier baat van kunnen hebben.
+Het doel van deze thesis is om de performantie van een nieuw type heterogene architectuur te bestuderen, de Zynq SoC van Xilinx. Deze chip combineert een dual core ARM processor en een FPGA op dezelfde chip. Idealiter zou deze de voordelen van deze beide moeten samenbrengen in 1 verpakking: het gebruiksgemak en performantie bij floating point berekeningen van de CPU en het doorgedreven parallellisme van de FPGA.
+In het eerste hoofdstuk wordt een introductie gegeven tot de huidige toestand van parallel processing. De meest courante parallale processors worden beschreven evenals een systeem voor het classificeren van parallelle algoritmes. Het tweede hoofdstuk begint met een beschrijving van het Zynq platform, waarbij de processor, de FPGA als de verbindingen tussen deze 2 besproken worden. Het video bewerkings-systeem dat gebruikt wordt voor deze thesis, de Zynq Targeted Reference Design is een real-time video bewerkings-systeem met strenge vereisten voor de doorvoer van het systeem. De volledige stack wordt besproke, gaande van de hardware over het besturingssysteem tot de eigenlijke applicatie. In het derde hoofdstuk wordt uitgelegd wat High Level Synthesis is, een techniek om een programmeertaal om te zetten naar hardware. De eigenschappen van Vivado HLS, de gebruikte software, worden ook in dit hoofdstuk besproken. In het vierde hoofdstuk worden de factoren die de performantie van het systeem beïnvloeden besproken, evenals een systeem om de performantie visueel weer te geven:  het roofline model. Concepten van dit roofline model worden gebruikt om de performantie te interpreteren. 
+
+\end{otherlanguage}

@@ -7,7 +7,7 @@
 % The following makes latex use nicer postscript fonts.
 \usepackage{times}
 \usepackage[dutch,english]{babel}
-\usepackage[colorlinks,urlcolor=blue,linkcolor=blue]{hyperref}
+%\usepackage[colorlinks,urlcolor=blue,linkcolor=blue]{hyperref}
 
 
  
@@ -23,11 +23,11 @@
 \title{			Performance Analysis of a Real-Time Video Processing System}
 
 \promotortitle{	Promotors}
-\promotor{		Dr. Ir. Erik D'Hollander\\
+\promotor{		Dr. ir. Erik D'Hollander\\
 				Dr. An Braeken}
 
 \advisortitle{	Advisors}					
-\advisors{		In. Bruno Tiago Da Silva Gomes}
+\advisors{		Ing. Bruno Tiago Da Silva Gomes}
 
 \faculty{		Faculty of Applied Sciences and Engineering}
 
@@ -52,12 +52,14 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{xcolor}
-\usepackage{lscape}
+\usepackage{pdflscape}
 \usepackage{amsmath}
 \usepackage{tabularx}
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{booktabs}
+\usepackage{afterpage}
+\usepackage[toc,acronym]{glossaries}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %						%
@@ -92,6 +94,13 @@
 
 \newcommand{\quotationmarks}[1]{ ``#1''}
 
+\newcommand{\abbreventry}[2]{\textbf{#1}: #2\\}
+
+\newcommand{\emptypage}[0]{\newpage \mbox{}}
+
+
+\makeglossaries
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %							%
@@ -101,13 +110,17 @@
 
 \begin{document}
 
-
+\pagenumbering{gobble}
 \maketitlepage
 
-\newpage
-\mbox{}
+\emptypage
+\emptypage
+\emptypage
 
 \maketitlepage
+\emptypage
+
+\pagenumbering{arabic}
 
 
 \include{tex/abstract}
@@ -118,6 +131,7 @@
 \tableofcontents
 \listoffigures
 \listoftables
+\input{tex/abbrev}
 
 \include{tex/introduction}
 \include{tex/platform_overview}

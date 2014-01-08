@@ -6,7 +6,7 @@
 
 \section{Zynq-7000}
 
-The Zynq-7000 System on Chip combines a dual core ARM Cortex-A9 with Xilinx programmable logic in a single device. This combination of a CPU and an FPGA on the same device is not a new phenomenon, with examples of previous generations being the PowerPC based Xilinx Virtex-II Pro and some models of the Virtex 4 and Virtex 5 series FPGA's. A notable differences between these generations is the shift from PowerPC based architectures to ARM based architectures. Also, a notable shift in emphasis from HDL centered design to a more programmer centric view with an emphasis on high level languages can be seen. 
+The Zynq-7000 System on Chip combines a dual core ARM Cortex-A9 with Xilinx programmable logic in a single device. This combination of a CPU and an FPGA on the same device is not a new phenomenon, with examples of previous generations being the PowerPC based Xilinx Virtex-II Pro and some models of the Virtex 4 and Virtex 5 series FPGA's. A notable differences between these generations is the shift from PowerPC based architectures to ARM based architectures. Also, a notable shift in emphasis from HDL centered design to a more high-level abstraction centric view with an emphasis on high level languages can be seen. 
 	
 
 	\subsection{Processing System}
@@ -169,4 +169,31 @@ G_{y} =
 \end{bmatrix}
 \end{equation}
 
-The combination of these operators give an approximation of the gradient in both the x and the y direction. The sum of the absolute values of these two approximations gives the edge weight. It shows whether a location is close to an abrupt change in intensity in an image, an edge. By thresholding the edges can be separated from the rest of the image. The Sobel operator falls under dwarf number 6: structured grid which puts it in the cross section of the CPU, GPGPU and FPGA categories. The sobel oparator is thus a good fit for the Zynq platform. 
+The combination of these operators give an approximation of the gradient in both the x and the y direction. The sum of the absolute values of these two approximations gives the edge weight. It shows whether a location is close to an abrupt change in intensity in an image, an edge. By thresholding the edges can be separated from the rest of the image. The Vivado HLS code implementing this is given in listing \ref{lst:sobeloperator}. The Sobel operator falls under dwarf number 6: structured grid which puts it in the cross section of the CPU, GPGPU and FPGA categories. The sobel oparator is thus a good fit for the Zynq platform.
+
+\begin{lstlisting}[caption=Sobel operator implementation, captionpos=b, label=lst:sobeloperator]
+  for(i=0; i < 3; i++){
+    for(j = 0; j < 3; j++){
+
+      // X direction gradient
+      x_weight = x_weight + (window->getval(i,j) * x_op[i][j]);
+      
+      // Y direction gradient
+      y_weight = y_weight + (window->getval(i,j) * y_op[i][j]);
+    }
+  }
+  
+  edge_weight = ABS(x_weight) + ABS(y_weight);
+
+  if (edge_weight < 255)
+  edge_val = (255-(unsigned char)(edge_weight));
+  else
+  edge_val = 0;
+
+  //Edge thresholding
+  if(edge_val > high_thesh)
+    edge_val = 255;
+  else if(edge_val < low_thresh)
+    edge_val = 0;
+\end{lstlisting}
+

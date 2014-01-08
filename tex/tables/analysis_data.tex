@@ -1,8 +1,9 @@
-\begin{landscape}
+% !TEX root = /home/frank/School/thesis_text/thesis.tex
 
+\begin{landscape}
 \begin{table}[H]
 \begin{center}
-
+	\scalebox{0.9}{
 	\begin{tabular}{rccccc}
 	\toprule
 	 & \textbf{Original directives} & \textbf{No pragma} & \textbf{loop\_flatten\_on} & \textbf{loop\_flatten\_II\_2} & \textbf{no\_dependence} \\ \midrule
@@ -18,9 +19,11 @@
 	\textbf{pipelining inner} & yes & no & N/A & N/A & yes \\ 
 	\textbf{Initiation Interval} & 1 & 14 & 1 & 2 & 1 \\ \bottomrule
 	\end{tabular}
+	}
 
 	\bigskip
 
+	\scalebox{0.9}{
 	\begin{tabular}{rccccc}
 	\toprule
 	 & \textbf{no\_pipeline} & \textbf{only dependence} & \textbf{only loop flattening} & \textbf{only pipelining} & \textbf{only pipelining II 2} \\ \midrule
@@ -35,7 +38,7 @@
 	\textbf{pipelining inner} & no & no & no & no & no \\ 
 	\textbf{Initiation Interval} & 15 & 14 & 14 & 2 & 2 \\ \bottomrule
 	\end{tabular}
-
+	}
 
 \end{center}
 \caption{Analysis Data}

@@ -1,3 +1,5 @@
+% !TEX root = /home/frank/School/thesis_text/thesis.tex
+
 
 % \begin{table}[H]
 % \begin{center}
@@ -38,18 +40,20 @@
 
 \begin{table}[H]
 \begin{center}
+\scalebox{0.75}{
 \begin{tabular}{rccccc}
 \toprule
- & \textbf{Register} & \textbf{LUT} & \textbf{BRAM} & \textbf{DSP48} & \textbf{AXI HP} \\ \midrule
-\textbf{Total n° available} & 319200 & 159600 & 140 & 220 & 4 \\ 
-\textbf{Total Used} & 27648 & 25804 & 30 & 39 & 2 \\ 
-\textbf{FILTER\_ENGINE} & 1965 & 2156 & 2 & 23 & 0 \\ 
-\textbf{FILTER\_VDMA} & 4176 & 3883 & 6 & 0 & 1 \\ 
-\textbf{Overhead} & 21507 & 19765 & 22 & 16 & 1 \\ 
-\textbf{Max  available resources} & 297693 & 139835 & 118 & 204 & 3 \\ 
-\textbf{Max possible instances} & 48,48 & 23,16 & 14,75 & 8,87 & 3 \\ 
-\textbf{Rounded} & 48 & 23 & 14 & 8 & 3 \\ \bottomrule
+ 									& \textbf{Register} 		& 	\textbf{LUT}		& 	\textbf{BRAM} 		& 	\textbf{DSP48} 		& \textbf{AXI HP} 	\\ \midrule
+\textbf{n$^{\circ}$ available} 		& 		319200 				& 		159600 			& 		140 			& 		220 			& 	4 				\\ \medskip
+\textbf{System consumption} 		& 		27648 (8.6\%) 		& 		25804 (16.2\%)	& 		30 (21.4\%)		& 		39 (17.7\%) 	& 	2 (50\%) 		\\ 
+\textbf{FILTER\_ENGINE} 			& 		1965 (0.6\%)		& 		2156 (1.4\%)	& 		2 (1.4\%)		& 		23 (10.5\%)		& 	0 				\\ \medskip  
+\textbf{FILTER\_VDMA} 				& 		4176 (1.3\%)		& 		3883 (2.4\%)	& 		6 (4.3\%)		& 		0 				& 	1 (25\%)		\\ 
+\textbf{Overhead} 					& 		21507 (6.7\%)		& 		19765 (12.4\%)	& 		22 (15.7\%)		& 		16 (7.3\%)		& 	1 (25\%)		\\ 
+\textbf{Max  available resources} 	& 		297693 (93.3\%)		& 		139835 (87.6\%)	& 		118 (84.3\%)	& 		204 (92.7\%)	& 	3 (75\%)		\\ \midrule
+%\textbf{Max possible instances} & 48,48 & 23,16 & 14,75 & 8,87 & 3 \\ 
+\textbf{Max Instances} 				& 		48 					& 		23 				& 		14 				& 		8 				& 	3 \\ \bottomrule
 \end{tabular}
+}
 \caption{Scalability of the TRD}
 \label{tab:scalability}
 \end{center}

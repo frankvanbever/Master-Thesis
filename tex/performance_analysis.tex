@@ -218,7 +218,7 @@ Using only the following directive
 
 \skipbig{\hlsdirective{set\_directive\_dependence -variable \&buff\_A -type inter \\ -dependent false "sobel\_filter/sobel\_filter\_label0"}}
 
-doesn't have any measurable effect on the performance on the system compared to the one presented in section \ref{sec:nopragma}. The system The calculations for the performance stay the same at 0.47 FPS.
+doesn't have any measurable effect on the performance on the system compared to the one presented in section \ref{sec:nopragma}. The calculations for the system's performance stay the same at 0.47 FPS.
 
 \paragraph{Only Loop Flattening}
 Using only the following directive
@@ -293,7 +293,7 @@ The memory bandwidth is the decisive factor in determining the performance of a 
 As the scalability has shown the AXI HP interfaces are the constraining factor on the performance of the system. In the case of the TRD only 3 interfaces can be used. This causes the maximum bandwidth to be $3 \times 1081$MB/s or 3243 MB/s. If all 4 interfaces would be used the DDR bandwidth would be the constraining factor.
 
 \subsection{Interpretation}
-As was calculated in section \ref{sec:original_pragma} the Maximum throughput of the TRD is 95.37 frames per second. A frame consists of  $1920\times1080$ pixels  with 32 bpp. This means that each pixel is represented by 4 bytes. This gives a size of 8.29 MB for one frame. This gives a throughput of 791 MB/s. As is demonstrated in table \ref{tab:bwscale} the system throughput is always lower than the available memory bandwidth.
+As was calculated in section \ref{sec:original_pragma} the maximum throughput of the TRD is 95.37 frames per second. A frame consists of  $1920\times1080$ pixels  with 32 bpp. This means that each pixel is represented by 4 bytes. This gives a size of 8.29 MB for one frame. This gives a throughput of 791 MB/s. As is demonstrated in table \ref{tab:bwscale} the system throughput is always lower than the available memory bandwidth.
 \input{/home/frank/School/thesis_text/tex/tables/bw_scale.tex}
 
 

@@ -52,7 +52,7 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{xcolor}
-\usepackage{pdflscape}
+\usepackage{lscape}
 \usepackage{amsmath}
 \usepackage{tabularx}
 \usepackage{multicol}
@@ -127,19 +127,32 @@
 \include{tex/abstract_nl}
 \include{tex/acknowledgements}
 
+\emptypage
+
 % Obligatory lists
 \tableofcontents
 \listoffigures
 \listoftables
 \input{tex/abbrev}
 
+\emptypage
+
 \include{tex/introduction}
 \include{tex/platform_overview}
+
+\emptypage
+
 \include{tex/high_level_synthesis}
+
+\emptypage
+
 \include{tex/performance_analysis}
+
+\emptypage
+
 \include{tex/conclusion}
 
-
+\emptypage
 
 \bibliographystyle{plain}
 \bibliography{Masterproef,old_ref}

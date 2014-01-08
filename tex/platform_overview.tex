@@ -74,6 +74,8 @@ The Zynq-7000 System on Chip combines a dual core ARM Cortex-A9 with Xilinx prog
 \label{img:zynq_intereconnect}
 \end{figure}
 
+\newpage
+
 \section{Toolchain}
 Because of the heterogeneous nature of the Zynq Soc there are a number of tools necessary to implement a design. In this section the tools used for this thesis are discussed.
 
@@ -119,9 +121,6 @@ The second stage has a second \emph{AXI Interconnect} IP-core connected to the P
 
 The Third and last stage consists of the Xylon logiCVC-ML which is connected to the first AXI Interconnect. This is a video display controller which reads the data from the video memory and converts it into a format suitable for output. It also generates the control signals for the output.\\
 The IP-cores that use AXI-Lite for their configuration are also connected to a third AXI Interconnect IP-core. This IP-core is connected to the M\_AXI\_GP0. Through this connection the PS is able to control the functioning of the video processing pipeline. Finally There is an AXI Performance Monitor IP-core also connected to this third interconnect. The Performance monitor monitors the througput on the S\_AXI\_HP0 and S\_AXI\_HP2 ports. 
-
-
-
 
 
 \subsection{Software}

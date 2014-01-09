@@ -140,6 +140,7 @@ CI = \frac{3 \times (H \times W)}{4 \times 2 \times ( H \times W )} = \frac{3}{8
 
 
 \section{Directives influencing throughput}
+\label{sec:throughput_directives}
 
 The impact of the directives on the performance was studied through the modification of the directives present in the TRD. The results were compared to the results of the original TRD and are represented in table \ref{tab:analysis_data} (p. \pageref{tab:analysis_data}) and discussed in the following sections.
 
@@ -273,27 +274,27 @@ Using following directives:
 \end{itemize}
 
 The only difference with the directives of the original TRD is that the compiler isn't notified of the fact that there is no inter-dependence for the \texttt{buff\_A} variable. The same equation for the performance is given by eq. \ref{eq:nframes_orig_trd}. Using the values found in table 
-\ref{tab:analysis_data} (p. \pageref{tab:analysis_data}) a performance of 95.31 FPS cam be calculated, only marginally worse than the performance of the original configuration. 
+\ref{tab:analysis_data} (p. \pageref{tab:analysis_data}) a performance of 95.31 FPS can be calculated, only marginally worse than the performance of the original configuration. 
 
 
 \section{Resource consumption}
 
-The resource consumption estimates for these different solutions are given in table \ref{tab:utilization_estimates}. The utilization estimates are of importance because they determine the scalability of a core and thus the maximum attainable performance. Of all the combinations of directives that were tested only the original configuration and the no\_dependence configuration satisfied the requirements for the system. Given that the resource consumption is identical for the original configuration and the no\_dependence configuration the only determining factor in choosing is the performance. Given that the original configuration has better performance, although marginally, it is the most sensible choice to use for the building of a roofline model.\\
+The resource consumption estimates for these different solutions are given in table \ref{tab:utilization_estimates}. The utilization estimates are of importance because they determine the scalability of a core and thus the maximum attainable performance. Of all the combinations of directives that were tested, only the original configuration and the no\_dependence configuration satisfied the requirements for the system. Given that the resource consumption is identical for the original configuration and the no\_dependence configuration the only determining factor in choosing is the performance. Given that the original configuration has better performance, although marginally, it is the most sensible choice to use for the building of a roofline model.\\
 
 \input{/home/frank/School/thesis_text/tex/tables/utilization_estimates.tex}
 
 The original solution was exported as a Xilinx PCore and connected to the TRD system. This system was synthesized to get a more accurate prediction of the resource consumption. The results are detailed in table \ref{tab:scalability}. The difference between the roofline model of the The first noticeable difference when comparing the HLS estimates to the utilization reported from PlanAhead, found on the FILTER\_ENGINE line of the table, is that only the number of reported DSP blocks remains the same. The differences between the other reported values are likely caused by the addition of the AXI wrapper and possible redundancies in the design. The system also uses a number of IP-cores to perform necessary transformations on the data. They do not need to be duplicated to scale the system so these resources can be considered an overhead. Only the filter engine and the associated DMA engine need to be duplicated.\\
-The resource consumption in the Zynq differs from the resource consumption for regular FPGA's in that the available interfaces also need to be considered. The Zynq has 4 AXI High Performance ports and these are the constraining factor on the scalability of the TRD core. The filter engine/VDMA combination can be duplicated 3 times. 
+The resource consumption in the Zynq differs from the resource consumption for regular FPGA's in that the available interfaces also need to be considered. The Zynq has 4 AXI High Performance ports and these are the constraining factor on the scalability of the TRD core. The filter engine/VDMA combination can be instantiated 3 times. 
 
 \input{/home/frank/School/thesis_text/tex/tables/trd_scalability.tex}
 
 \section{Memory Bandwidth}
 
-The memory bandwidth is the decisive factor in determining the performance of a system. In the case of the Zynq however the PS and PL are connected to the AXI interconnect switches. The different AXI interconnect possibilities all influence the maximum attainable memory bandwidth, as well as the DMA controllers utilizing these interconnects. The DDR memory has a bus width of 32 bits and a clock frequency of 1066MHz Providing a maximum bandwidth of 4264 MB/s \cite{anon._zynq-7000_2013}. The filter engine utilizes an AXI HP interconnect port, which in combination with a DMA controller have an estimates throughput of 1200 MB/s. The datasheet for the AXI VDMA controller v5.04a which is used in the system has similar figures, with a typical throughput of 539 MB/s for the MM2S channel and 542 MB/s throughput for the S2MM channel. These can be used in full-duplex which gives a total bandwidth of 1081 MB/s per AXI HP port\cite{axivdma}.
-As the scalability has shown the AXI HP interfaces are the constraining factor on the performance of the system. In the case of the TRD only 3 interfaces can be used. This causes the maximum bandwidth to be $3 \times 1081$MB/s or 3243 MB/s. If all 4 interfaces would be used the DDR bandwidth would be the constraining factor.
+The memory bandwidth is the decisive factor in determining the performance of a system. In the case of the Zynq the PS and PL are connected to the AXI interconnect switches. The different AXI interconnect possibilities all influence the maximum attainable memory bandwidth, as well as the DMA controllers utilizing these interconnects. The DDR memory has a bus width of 32 bits and a clock frequency of 1066MHz Providing a maximum bandwidth of 4264 MB/s \cite{anon._zynq-7000_2013}. The filter engine utilizes an AXI HP interconnect port, which in combination with a DMA controller have an estimates throughput of 1200 MB/s. The datasheet for the AXI VDMA controller v5.04a which is used in the system has similar figures, with a typical throughput of 539 MB/s for the MM2S channel and 542 MB/s throughput for the S2MM channel. These can be used in full-duplex which gives a total bandwidth of 1081 MB/s per AXI HP port\cite{axivdma}.
+As the study of the scalability represented in table \ref{tab:scalability} has shown the AXI HP interfaces are the constraining factor on the performance of the system. In the case of the TRD only 3 interfaces can be used. This causes the maximum bandwidth to be $3 \times 1081$MB/s or 3243 MB/s. If all 4 interfaces would be used the DDR bandwidth would be the constraining factor.
 
 \subsection{Interpretation}
-As was calculated in section \ref{sec:original_pragma} the maximum throughput of the TRD is 95.37 frames per second. A frame consists of  $1920\times1080$ pixels  with 32 bpp. This means that each pixel is represented by 4 bytes. This gives a size of 8.29 MB for one frame. This gives a throughput of 791 MB/s. As is demonstrated in table \ref{tab:bwscale} the system throughput is always lower than the available memory bandwidth.
+As was calculated in section \ref{sec:throughput_directives} the maximum throughput of the TRD is 95.37 frames per second. A frame consists of  $1920\times1080$ pixels  with 32 bpp. This means that each pixel is represented by 4 bytes. This gives a size of 8.29 MB for one frame. This gives a throughput of 791 MB/s. As is demonstrated in table \ref{tab:bwscale} the system throughput is always lower than the available memory bandwidth. This means that the available hardware isn't being used to its full extent. If the bandwidth of the HDMI system, at 497MB/s, is taken into account then one instance should suffice to satisfy this constraint. 
 \input{/home/frank/School/thesis_text/tex/tables/bw_scale.tex}
 
 

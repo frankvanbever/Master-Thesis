@@ -115,10 +115,7 @@ Zynq is a powerful but complex architecture requiring a designer with a diverse 
 The hardware side can be split into 3 stages:\\ 
 
 The first stage starts with the \emph{fmc\_imageon\_hdmi\_in} IP-core. This core extracts the horizontal and vertical blanking signals from the YCrCb 4:2:2 input it receives from the FMC-Imageon Module. In turn this core is connected to the \emph{Video In to AXI4-Stream} IP-core. This core handles the clock boundary between the video clock domain and the AXI4-Stream clock domain. The preservation of timing information is guaranteed by a Video Timing Core. The AXI4-stream is routed into a \emph{Test Pattern Generator} IP-core which can generate a test-pattern or act as a pass-through for the video signal, depending on the configuration. The data coming from the TPG is fed into a \emph{Chroma Resampler} IP-core which converts the YCrCb 4:2:2 formatted signal into a YCrCb 4:4:4 signal. HDMI uses the chroma subsampling to reduce the amount of data that needs to be transmitted. This can be done because the human eye is not as sensitive for the Chroma components as it is for the Luminance component. The upsampling is necessary for the following step, which is the colorspace conversion performed by the \emph{YCrCb to RGB Color-Space Converter} IP-core, which converts the YCrCb signal to RGB video as this is the format required by the following steps in the video processing pipeline. The video signal gets routed into a \emph{Video DMA}controller which writes the data to memory using an \emph{AXI Interconnect} IP-core connected to the PS' S\_AXI\_HP0 port.\\
-
 The second stage has a second \emph{AXI Interconnect} IP-core connected to the PS' S\_AXI\_HP2 port. A \emph{Video DMA} controller reads data from memory through this interconnect and converts the date from the AXI memory mapped format to an AXI stream format. This gets sent to the Vivado HLS generated Sobel core. This core sends the data back to the Video DMA controller which writes it back to memory through the AXI Interconnect.
-
-
 The Third and last stage consists of the Xylon logiCVC-ML which is connected to the first AXI Interconnect. This is a video display controller which reads the data from the video memory and converts it into a format suitable for output. It also generates the control signals for the output.\\
 The IP-cores that use AXI-Lite for their configuration are also connected to a third AXI Interconnect IP-core. This IP-core is connected to the M\_AXI\_GP0. Through this connection the PS is able to control the functioning of the video processing pipeline. Finally there is an AXI Performance Monitor IP-core also connected to this third interconnect. The Performance monitor monitors the throughput on the S\_AXI\_HP0 and S\_AXI\_HP2 ports. 
 
@@ -150,7 +147,7 @@ There are 2 versions of the application available: a version with a Qt based GUI
 
 \subsection{Sobel Operator}
 
-The described system performsedge detection using the sobel operator on the video data. The sobel operator computes an approximation of the gradient. The computation is done by convolving the image with 2 $3 \times 3$ kernels.
+The described system performs edge detection using the Sobel operator on the video data. The Sobel operator computes an approximation of the gradient. The computation is done by convolving the image with 2 $3 \times 3$ kernels.
 
 \begin{equation}
 G_{x} = 

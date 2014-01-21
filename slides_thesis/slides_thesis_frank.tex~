@@ -1,0 +1,230 @@
+\documentclass{beamer}
+%\documentclass[trans]{beamer} %om te printen!
+%\transglitter etc: kunt ge pas zien op Full Screen (Ctrl+L)
+
+\usepackage{graphicx,multicol}
+\usepackage[all]{xy}
+\usepackage{beamerouterthememiniframes, beamercolorthemeann,srcltx,hyperref}
+
+\setbeamercolor{normal text}{fg=black!70}
+\setbeamertemplate{navigation symbols}{}%geen navigatie
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
+
+\title{Performance Analysis of a Real-Time Video Processing System}
+\author{Frank Vanbever}
+\date{27 January 2014}
+
+\begin{document}
+
+\begin{frame}[plain]
+\includegraphics[width=0.4\paperwidth]{VUB_logo.jpg}
+\vspace{2cm}
+\titlepage
+\end{frame}
+
+
+%\section[Overzicht]{}%rechte haken dienen om niet in de outline te komen
+%maar wel vanboven in het donkergroene balkje
+
+%\begin{frame}[plain]{Outline}
+%\end{frame}
+%
+%\begin{frame}[plain]{Outline}
+%\tableofcontents[pausesections]
+%\end{frame}
+%
+%
+%\section{blabla}
+%
+%\begin{frame}
+%\begin{alertblock}{}
+%\begin{center}
+%blabla
+%\end{center}
+%\end{alertblock}
+%\end{frame}
+
+
+\section{Table of Contents}
+
+
+\begin{frame}{Contents}
+  \begin{itemize}
+  \item Introduction
+    \begin{itemize}
+    \item History
+    \item Computing Components
+    \item Parallel Processing
+    \end{itemize}
+  \item Platform Overview
+    \begin{itemize}
+    \item Zynq-7000
+    \item ZC-702 Base TRD
+    \end{itemize}
+  \item High Level Synthesis
+    \begin{itemize}
+    \item Vivado HLS
+    \end{itemize}
+  \item Performance Analysis
+    \begin{itemize}
+    \item Roofline Model
+    \item Memory Architecture
+    \item Directives
+    \item Resource Consumption
+    \item Memory Bandwidth
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Introduction}
+  \begin{itemize}
+  \item Until recently computing performance could be gained
+    maintaining the sequential programming paradigm
+    \begin{itemize}
+    \item Primarily through Moore's law
+    \item multiple-issue, pipelining and \emph{out-of-order} execution
+      perpetuated this
+    \end{itemize}
+  \item Eventually a \emph{power wall} was hit. The size of MOSFETs
+    couldn't keep on decreasing whilst the frequency decreased.
+  \item The solution was to turn to parallel processors, containing
+    more than one processing unit working at a time.
+    \begin{itemize}
+    \item This caused a new problem: How could this parallel hardware
+      be used efficiently.
+    \item A new programming paradigm is necessary
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Processing Components}
+  \begin{itemize}
+  \item Three types of computing components saw widespread use
+    \begin{itemize}
+    \item \textbf{Multicore Processors}
+      \begin{itemize}
+      \item Solution presented by traditional manufacturers
+      \item Multiple CPU cores on the same die.
+      \item Easiest to program, modest parallelism
+      \end{itemize}
+    \item \textbf{Graphics Processing Units}
+      \begin{itemize}
+      \item Originally used as graphics coprocessor in traditional
+        computers
+      \item Many multithreaded SIMD cores
+      \item Programmed using OpenCL or CUDA, best floating-point
+        performance, bad conditional execution performance
+      \end{itemize}
+    \item \textbf{Field Programmable Gate Array}
+      \begin{itemize}
+      \item Devices containing a vast amount of configurable logic
+        connected through programmable connections
+      \item Unconstrained by \emph{Von Neuman}, use dataflow paradigm
+      \item Typically programmed using VHDL or Verilog, poor
+        floating-point performance
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Platform Overview}
+
+\begin{frame}{Zynq-7000}
+  \begin{itemize}
+  \item The Zynq-7000 is a \emph{System On Chip} or SoC which consists
+    of a dual core ARM Cortex-A9 and Xilinx programmable logic
+    \begin{itemize}
+    \item These are called the Processing System (PS) and Programmable
+      Logic (PL)
+    \end{itemize}
+  \item The processing system consists of the Application Processor
+    Unit (APU), a memory controller and numerous I/O peripherals
+  \item The Programmable Logic is based on Artix-7 or Kintex-7
+    technology dependent on the type
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Interconnect}
+  \begin{itemize}
+  \item The interconnections in the Zynq SoC use the Advanced
+    Extensible Interface (AXI) protocol which is part of ARM's
+    Advanced Microcontroller Bus Architecture (AMBA) v3.0
+  \item The interconnections between the PS and PL play an important
+    role in the system's performance
+  \item \textbf{AXI\_HP} The system has four \textbf{H}igh
+    \textbf{P}erformance interconnections connecting PL masters to DDR
+    and OCM memories using double FIFO buffers
+  \item \textbf{AXI\_GP} The system has four \textbf{G}eneral
+    \textbf{P}urpose ports divided into 2 master ports and 2 slave
+    ports.
+  \item \textbf{AXI\_ACP} The \textbf{A}ccelerator \textbf{C}oherency
+    \textbf{P}ort connects the PL directly with the APU caches through
+    the Snoop Control Unit with optional coherency
+  \end{itemize}
+\end{frame}
+
+\section{High Level Synthesis}
+
+\begin{frame}{High Level Synthesis}
+  \begin{itemize}
+  \item A recurring theme is the relative difficulty of implementing
+    an algorithm on FPGA
+    \begin{itemize}
+    \item Both development and synthesis take considerably longer
+    \end{itemize}
+  \item HLS tools partially alleviate these problems
+    \begin{itemize}
+    \item Typically a C,C++ or SystemC program is converted into VHDL
+      or Verilog
+    \item This improves programmer productivity
+    \end{itemize}
+
+  \item Vivado HLS was used for this thesis
+    \begin{itemize}
+    \item C code is compilable allowing pre-synthesis verification
+      testbenches, which in turn can be compiled to SystemC for
+      post-synthesis verification
+    \item A multitude of optimizations and interfaces are available
+    \item Synthesis reports and analysis perspective contains information about timing, latency and resource consumption
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Performance Analysis}
+
+\begin{frame}{Roofline Model}
+  \begin{itemize}
+  \item The roofline model is a visial model that gives insight into factors influencing performance
+    \begin{itemize}
+    \item It is based on the observation that bandwidth is the constraining resource on system performance
+    \item The model is a plot of the peak computational performance as a function of the computational performance
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Memory Architecture}
+  
+\end{frame}
+
+\begin{frame}{Directives}
+  
+\end{frame}
+
+\begin{frame}{Resource Consumption \& Memory Bandwidth}
+  
+\end{frame}
+
+
+
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+  
+\end{frame}
+
+
+\end{document}
